@@ -1,10 +1,6 @@
-import NavBar from '../../components/NavBar/NavBar';
 import RouteButton from '../../components/RouteButton/RouteButton';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './Report.less';
-
 import React, { useEffect, useState } from 'react';
+import './Report.less';
 import { Link, useNavigate } from 'react-router-dom';
 import { Table, Button, Tag } from 'antd';
 import './ActivityLevelReport.less';
@@ -26,6 +22,161 @@ import { Filter } from './ReportFilter';
 
 
 export const StudyBrowser = (props) => {
+  const [sessions, setSessions] = useState([]);
+  const [sessionCount, setSessionCount] = useState(0);
+  const navigate = useNavigate();
+  const { paramObj, setSearchParam } = useSearchParam();
+  const [showFilter, setShowFilter] = useState(false);
+  const [tbNameFilter, setTbNameFilter] = useState([]);
+  const [tbClassroomFilter, setTbClassroomFilter] = useState([]);
+  const [tbGradeFilter, setTbGradeFilter] = useState([]);
+  const [tbUnitFilter, setTbUnitFilter] = useState([]);
+  const [tbLessonFilter, setTbLessonFilter] = useState([]);
+  const [tbPrevFilter, setTbPrevFilter] = useState(null);
+
+  const columns = [
+    {
+      title: 'Student',
+      key: 'student',
+      width: '2%',
+      align: 'left',
+      filters: tbNameFilter,
+      onFilter: (value, key) => {
+        let result = false;
+        key.students.forEach((student) => {
+          if (student.name.indexOf(value) === 0) {
+            result = true;
+            return;
+          }
+        });
+        return result;
+      },
+      render: (_, key) => <div>{key.students[0].name}</div>,
+    },
+    {
+      title: 'Classroom',
+      key: 'classroom',
+      dataIndex: ['classroom', 'name'],
+      width: '6%',
+      align: 'left',
+      filters: tbClassroomFilter,
+      onFilter: (value, key) => key.classroom?.name.indexOf(value) === 0,
+    },
+    {
+      title: 'Grade',
+      dataIndex: ['grade', 'name'],
+      key: 'grade',
+      width: '2%',
+      align: 'left',
+      filters: tbGradeFilter,
+      onFilter: (value, key) => key.grade?.name.indexOf(value) === 0,
+    },
+    {
+      title: 'Unit',
+      dataIndex: ['unit', 'name'],
+      key: 'unit',
+      width: '4%',
+      align: 'left',
+      filters: tbUnitFilter,
+      onFilter: (value, key) => key.unit?.name.indexOf(value) === 0,
+    },
+    {
+      title: 'Lesson',
+      dataIndex: ['lesson_module', 'name'],
+      key: 'lesson_module',
+      width: '3%',
+      align: 'left',
+      filters: tbLessonFilter,
+      onFilter: (value, key) =>
+        key.lesson_module?.name.indexOf(value) === 0,
+    },
+    {
+      title: 'Session Started',
+      dataIndex: 'created_at',
+      key: 'sessionStart',
+      width: '4%',
+      align: 'left',
+      sorter: true,
+      sortOrder: paramObj['_sort'] === 'created_at:DESC' ? 'descend' : 'ascend',
+      sortDirections:
+        paramObj['_sort'] === 'created_at:DESC'
+          ? ['ascend', 'descend', 'ascend']
+          : ['descend', 'ascend', 'descend'],
+      onHeaderCell: () => {
+        return {
+          onClick: () => {
+            const _start = paramObj['_start'];
+            const pageSize = paramObj['pageSize'];
+            const _sort =
+              paramObj['_sort'] === 'created_at:DESC'
+                ? 'created_at:ASC'
+                : 'created_at:DESC';
+            setSearchParam({ _start, _sort, pageSize });
+          },
+        };
+      },
+      render: (_, key) => <div>{formatMyDate(key.created_at)}</div>,
+    },
+    {
+      title: 'Partners',
+      key: 'hasPartners',
+      width: '2%',
+      align: 'left',
+      render: (_, key) => (
+        <div>
+          {key.students
+            .slice(1)
+            .map((student) => student.name)
+            .join(', ')}
+        </div>
+      ),
+    },
+    {
+      title: 'View Report',
+      dataIndex: 'enrolled',
+      key: 'enrolled',
+      width: '2%',
+      align: 'right',
+      render: (_, session) => (
+        <Link to={`/activityLevel/${session.id}`}>View Report</Link>
+      ),
+    },
+  ];
+
+  const makeTbNameFilter = (data) => {
+    let filter = [];
+    const map = new Map();
+
+    data.forEach((element) => {
+      const names = element.students.map((student) => student.name);
+      names.forEach((name) => {
+        if (!map.get(name)) {
+          filter.push({ text: name, value: name });
+          map.set(name, true);
+        }
+      });
+    });
+    setTbNameFilter(filter);
+  };
+
+  const makeFilter = (data, category) => {
+    let filter = [];
+    const map = new Map();
+
+    data.forEach((element) => {
+      const name = element[category]?.name;
+      if (name && !map.has(name)) {
+        filter.push({ text: name, value: name });
+        map.set(name, true);
+      }
+    });
+    return filter;
+  };
+
+  const formatMyDate = (value, locale = 'en-US') => {
+    let output = new Date(value).toLocaleDateString(locale);
+    return output + ' ' + new Date(value).toLocaleTimeString(locale);
+  };
   useEffect(() => {
     //Fetch data asynchronously to get group level studies and individual-level studies
     const fetchData = async () => {
@@ -139,171 +290,4 @@ export const StudyBrowser = (props) => {
     </>
   );
 }
-
-
-
-
-
-
-const ActivityLevelReport = () => {
-  const [sessions, setSessions] = useState([]);
-  const [sessionCount, setSessionCount] = useState(0);
-  const navigate = useNavigate();
-  const { paramObj, setSearchParam } = useSearchParam();
-  const [showFilter, setShowFilter] = useState(false);
-  const [tbNameFilter, setTbNameFilter] = useState([]);
-  const [tbClassroomFilter, setTbClassroomFilter] = useState([]);
-  const [tbGradeFilter, setTbGradeFilter] = useState([]);
-  const [tbUnitFilter, setTbUnitFilter] = useState([]);
-  const [tbLessonFilter, setTbLessonFilter] = useState([]);
-  const [tbPrevFilter, setTbPrevFilter] = useState(null);
-
   
-
-  const makeTbNameFilter = (data) => {
-    let filter = [];
-    const map = new Map();
-
-    data.forEach((element) => {
-      const names = element.students.map((student) => student.name);
-      names.forEach((name) => {
-        if (!map.get(name)) {
-          filter.push({ text: name, value: name });
-          map.set(name, true);
-        }
-      });
-    });
-    setTbNameFilter(filter);
-  };
-
-  const makeFilter = (data, category) => {
-    let filter = [];
-    const map = new Map();
-
-    data.forEach((element) => {
-      const name = element[category]?.name;
-      if (name && !map.has(name)) {
-        filter.push({ text: name, value: name });
-        map.set(name, true);
-      }
-    });
-    return filter;
-  };
-
-  const formatMyDate = (value, locale = 'en-US') => {
-    let output = new Date(value).toLocaleDateString(locale);
-    return output + ' ' + new Date(value).toLocaleTimeString(locale);
-  };
-
-  const columns = [
-    {
-      title: 'Student',
-      key: 'student',
-      width: '2%',
-      align: 'left',
-      filters: tbNameFilter,
-      onFilter: (value, key) => {
-        let result = false;
-        key.students.forEach((student) => {
-          if (student.name.indexOf(value) === 0) {
-            result = true;
-            return;
-          }
-        });
-        return result;
-      },
-      render: (_, key) => <div>{key.students[0].name}</div>,
-    },
-    {
-      title: 'Classroom',
-      key: 'classroom',
-      dataIndex: ['classroom', 'name'],
-      width: '6%',
-      align: 'left',
-      filters: tbClassroomFilter,
-      onFilter: (value, key) => key.classroom?.name.indexOf(value) === 0,
-    },
-    {
-      title: 'Grade',
-      dataIndex: ['grade', 'name'],
-      key: 'grade',
-      width: '2%',
-      align: 'left',
-      filters: tbGradeFilter,
-      onFilter: (value, key) => key.grade?.name.indexOf(value) === 0,
-    },
-    {
-      title: 'Unit',
-      dataIndex: ['unit', 'name'],
-      key: 'unit',
-      width: '4%',
-      align: 'left',
-      filters: tbUnitFilter,
-      onFilter: (value, key) => key.unit?.name.indexOf(value) === 0,
-    },
-    {
-      title: 'Lesson',
-      dataIndex: ['lesson_module', 'name'],
-      key: 'lesson_module',
-      width: '3%',
-      align: 'left',
-      filters: tbLessonFilter,
-      onFilter: (value, key) =>
-        key.lesson_module?.name.indexOf(value) === 0,
-    },
-    {
-      title: 'Session Started',
-      dataIndex: 'created_at',
-      key: 'sessionStart',
-      width: '4%',
-      align: 'left',
-      sorter: true,
-      sortOrder: paramObj['_sort'] === 'created_at:DESC' ? 'descend' : 'ascend',
-      sortDirections:
-        paramObj['_sort'] === 'created_at:DESC'
-          ? ['ascend', 'descend', 'ascend']
-          : ['descend', 'ascend', 'descend'],
-      onHeaderCell: () => {
-        return {
-          onClick: () => {
-            const _start = paramObj['_start'];
-            const pageSize = paramObj['pageSize'];
-            const _sort =
-              paramObj['_sort'] === 'created_at:DESC'
-                ? 'created_at:ASC'
-                : 'created_at:DESC';
-            setSearchParam({ _start, _sort, pageSize });
-          },
-        };
-      },
-      render: (_, key) => <div>{formatMyDate(key.created_at)}</div>,
-    },
-    {
-      title: 'Partners',
-      key: 'hasPartners',
-      width: '2%',
-      align: 'left',
-      render: (_, key) => (
-        <div>
-          {key.students
-            .slice(1)
-            .map((student) => student.name)
-            .join(', ')}
-        </div>
-      ),
-    },
-    {
-      title: 'View Report',
-      dataIndex: 'enrolled',
-      key: 'enrolled',
-      width: '2%',
-      align: 'right',
-      render: (_, session) => (
-        <Link to={`/activityLevel/${session.id}`}>View Report</Link>
-      ),
-    },
-  ];
-
-
-export default ActivityLevelReport;
-
