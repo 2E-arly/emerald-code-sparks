@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getActivityToolbox } from '../../Utils/requests.js';
-import BlocklyCanvasPanel from '../../components/ActivityPanels/BlocklyCanvasPanel/BlocklyCanvasPanel';
+import BlocklyCanvasPanel from '../../components/ActivityPanels/BlocklyCanvasPanel/BlocklyCanvasPanel.js';
 import { message } from 'antd';
-import NavBar from '../../components/NavBar/NavBar';
+import NavBar from '../../components/NavBar/NavBar.js';
 import { useNavigate } from 'react-router-dom';
 
 export default function Workspace({ handleLogout }) {
