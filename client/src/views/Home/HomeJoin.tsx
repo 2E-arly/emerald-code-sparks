@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { message } from 'antd';
 import './Home.less';
 import { getStudents } from '../../Utils/requests';
 
-export default function HomeJoin(props) {
+export const HomeJoin = () => {
   const [loading, setLoading] = useState(false);
   const [joinCode, setJoinCode] = useState('');
   const navigate = useNavigate();
@@ -24,12 +24,7 @@ export default function HomeJoin(props) {
   };
 
   return (
-    <div
-      id='box'
-      onKeyPress={(e) => {
-        if (e.key === 'Enter') handleLogin();
-      }}
-    >
+    <div id='box'>
       <input
         type='text'
         value={joinCode}
