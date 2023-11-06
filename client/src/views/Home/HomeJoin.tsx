@@ -9,8 +9,8 @@ export const HomeJoin = () => {
   const [joinCode, setJoinCode] = useState('');
   const navigate = useNavigate();
   const handleLogin = () => {
+    
     setLoading(true);
-
     getStudents(joinCode).then((res) => {
       if (res.data) {
         setLoading(false);
@@ -30,6 +30,7 @@ export const HomeJoin = () => {
         value={joinCode}
         placeholder='Join Code'
         onChange={(e) => setJoinCode(e.target.value)}
+        onKeyDown={(e) => {if(e.key === 'Enter') handleLogin()}}
       />
       <input
         type='button'
