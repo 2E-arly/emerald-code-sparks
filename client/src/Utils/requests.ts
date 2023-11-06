@@ -8,7 +8,16 @@ const POST = 'POST';
 const DELETE = 'DELETE';
 
 // all request functions should utilize makeRequest and return an obj with structure {data, err}
-const makeRequest = async ({ method, path, data, auth = false, error }) => {
+
+type requestApi = {
+  method: "GET" | "POST" | "PUT" | "DELETE",
+  path: string,
+  data?: unknown,
+  auth?: boolean,
+  error?: unknown
+}
+
+const makeRequest = async ({ method, path, data, auth = false, error }: requestApi ) => {
   let res = null;
   let err = null;
   const config = auth
