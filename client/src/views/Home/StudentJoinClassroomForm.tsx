@@ -4,13 +4,14 @@ import { message } from 'antd';
 import './Home.less';
 import { getStudents } from '../../Utils/requests';
 
-export const HomeJoin = () => {
+export const StudentJoinClassroomForm = () => {
   const [loading, setLoading] = useState(false);
   const [joinCode, setJoinCode] = useState('');
   const navigate = useNavigate();
   const handleLogin = () => {
     
     setLoading(true);
+
     getStudents(joinCode).then((res) => {
       if (res.data) {
         setLoading(false);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './StudentLogin.less';
 import Logo from '../../assets/casmm_logo.png';
 import { getStudents, postJoin } from '../../Utils/requests';
@@ -45,13 +45,13 @@ export default function StudentLogin() {
   };
 
   const studentAuth = (ids) => {
-    let authList = [];
+    const authList = [];
     for (let i = 0; i < ids.length; i++) {
       for (let j = 0; j < studentList.length; j++) {
         if (ids[i] === studentList[j].id) authList.push(studentList[j]);
       }
     }
-    let fails = [...authFail];
+    const fails = [...authFail];
     // studentAnimals.forEach((animal) => console.log(animal));
     for (let i = 0; i < authList.length; i++) {
       if (authList[i].character !== studentAnimals[i]) {
@@ -66,7 +66,7 @@ export default function StudentLogin() {
   };
 
   const handleLogin = async () => {
-    let ids = studentIds.slice(0, numForms);
+    const ids = studentIds.slice(0, numForms);
     const fails = studentAuth(ids);
     if (!fails.includes(true)) {
       const res = await postJoin(joinCode, ids);
@@ -91,19 +91,19 @@ export default function StudentLogin() {
   };
 
   const updateStudentUsers = (studentId, entryNum) => {
-    let ids = [...studentIds];
+    const ids = [...studentIds];
     ids[entryNum - 1] = parseInt(studentId);
     setStudentIds(ids);
   };
 
   const updateStudentAnimals = (studentAnimal, entryNum) => {
-    let animals = [...studentAnimals];
+    const animals = [...studentAnimals];
     animals[entryNum - 1] = studentAnimal;
     setStudentAnimals(animals);
   };
 
   const setForms = () => {
-    let forms = [];
+    const forms = [];
     for (let i = 0; i < numForms; i++) {
       forms.push(
         <span key={i}>
@@ -136,10 +136,10 @@ export default function StudentLogin() {
   const removeStudent = () => {
     if (numForms > 1) {
       setNumForms(numForms - 1);
-      let ids = [...studentIds];
+      const ids = [...studentIds];
       ids[numForms - 1] = '';
       setStudentIds(ids);
-      let fails = [...authFail];
+      const fails = [...authFail];
       fails[numForms - 1] = false;
       setAuthFail(fails);
       setForms();
