@@ -13,7 +13,7 @@ import Replay from './views/Replay/Replay';
 import ActivityLevelReport from './views/Researcher/ActivityLevelReport';
 import ActivityLevelReportView from './views/Researcher/ActivityLevelReportView';
 import GroupReport from './views/Researcher/GroupReport';
-import Report from './views/Researcher/ReportBrowser';
+import Report from './views/Researcher/StudyBrowser';
 import Student from './views/Student/Student';
 import StudentLogin from './views/StudentLogin/StudentLogin';
 import ForgetPassword from './views/TeacherLogin/ForgetPassword';

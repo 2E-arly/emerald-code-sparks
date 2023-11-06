@@ -25,7 +25,7 @@ import { Filter } from './ReportFilter';
 
 
 
-export default function StudyBrowser(props) {
+export const StudyBrowser = (props) => {
   useEffect(() => {
     //Fetch data asynchronously to get group level studies and individual-level studies
     const fetchData = async () => {
@@ -45,10 +45,9 @@ export default function StudyBrowser(props) {
             filter += `${key}=${value}&`;
         }
       }
-      const [sessionRes, sessionCountRes] = await Promise.all([
-        getSessionsWithFilter(filter),
-        getSessionCountWithFilter(filter),
-      ]);
+      const sessionRes = await getSessionsWithFilter(filter);
+      const sessionCountRes = await getSessionCountWithFilter(filter);
+
       if (sessionRes.error) {
         console.error(sessionRes.error);
       }
@@ -64,14 +63,80 @@ export default function StudyBrowser(props) {
     };
     if (paramObj['_sort']) fetchData();
   }, [paramObj]);
+
+
   return (
-    <div className='container nav-padding'>
-      <NavBar />
-      <div id='main-header'>Welcome Researcher!</div>
-      <h1 id='report-subheader'>Reports</h1>
-      <div id='button-container'>
+    <>
+      <div className='container nav-padding'>
+        <NavBar />
+        <div id='main-header'>Welcome Researcher!</div>
+        <h1 id='report-subheader'>Reports</h1>
+        <div id='button-container'>
+        </div>
       </div>
-    </div>
+      <div className='container nav-padding'>
+          <NavBar />
+          <div className='menu-bar'>
+            <div id='activity-level-report-header'>Activity Level - Student Report</div>
+
+            <button
+              className='activity-level-return'
+              onClick={() => navigate('/report')}
+            >
+              Return to Dashboard
+            </button>
+          </div>
+          <button id='show-filter-btn' onClick={() => setShowFilter(!showFilter)}>
+            {showFilter ? (
+              <p> Click to Hide Filter</p>
+            ) : (
+              <p> Click to Show Filter</p>
+            )}
+          </button>
+          {showFilter ? (
+            <div className='filter-show'>
+              <div className='filter-items'>
+                <Filter setSearchParam={setSearchParam} paramObj={paramObj} />
+              </div>
+            </div>
+          ) : (
+            <div className='filter-hide'>
+              <Filter setSearchParam={setSearchParam} paramObj={paramObj} />
+            </div>
+          )}
+          <main id='activity-report-content-wrapper'>
+            <Table
+              columns={columns}
+              dataSource={sessions}
+              rowKey='id'
+              onChange={(Pagination, filters) => {
+                if (
+                  tbPrevFilter == null ||
+                  JSON.stringify(filters) === JSON.stringify(tbPrevFilter)
+                ) {
+                  setSearchParam({
+                    _start: (Pagination.current - 1) * Pagination.pageSize,
+                    _sort: paramObj['_sort'],
+                    pageSize: Pagination.pageSize,
+                  });
+                  if (tbPrevFilter == null) {
+                    setTbPrevFilter(filters);
+                  }
+                } else {
+                  setTbPrevFilter(filters);
+                }
+              }}
+              pagination={{
+                current: paramObj['_start'] / paramObj['pageSize'] + 1,
+                showQuickJumper: true,
+                showSizeChanger: true,
+                pageSize: paramObj['pageSize'] || 10,
+                total: sessionCount,
+              }}
+            />
+          </main>
+        </div>
+    </>
   );
 }
 
@@ -239,71 +304,6 @@ const ActivityLevelReport = () => {
     },
   ];
 
-  return (
-    <div className='container nav-padding'>
-      <NavBar />
-      <div className='menu-bar'>
-        <div id='activity-level-report-header'>Activity Level - Student Report</div>
-
-        <button
-          className='activity-level-return'
-          onClick={() => navigate('/report')}
-        >
-          Return to Dashboard
-        </button>
-      </div>
-      <button id='show-filter-btn' onClick={() => setShowFilter(!showFilter)}>
-        {showFilter ? (
-          <p> Click to Hide Filter</p>
-        ) : (
-          <p> Click to Show Filter</p>
-        )}
-      </button>
-      {showFilter ? (
-        <div className='filter-show'>
-          <div className='filter-items'>
-            <Filter setSearchParam={setSearchParam} paramObj={paramObj} />
-          </div>
-        </div>
-      ) : (
-        <div className='filter-hide'>
-          <Filter setSearchParam={setSearchParam} paramObj={paramObj} />
-        </div>
-      )}
-      <main id='activity-report-content-wrapper'>
-        <Table
-          columns={columns}
-          dataSource={sessions}
-          rowKey='id'
-          onChange={(Pagination, filters) => {
-            if (
-              tbPrevFilter == null ||
-              JSON.stringify(filters) === JSON.stringify(tbPrevFilter)
-            ) {
-              setSearchParam({
-                _start: (Pagination.current - 1) * Pagination.pageSize,
-                _sort: paramObj['_sort'],
-                pageSize: Pagination.pageSize,
-              });
-              if (tbPrevFilter == null) {
-                setTbPrevFilter(filters);
-              }
-            } else {
-              setTbPrevFilter(filters);
-            }
-          }}
-          pagination={{
-            current: paramObj['_start'] / paramObj['pageSize'] + 1,
-            showQuickJumper: true,
-            showSizeChanger: true,
-            pageSize: paramObj['pageSize'] || 10,
-            total: sessionCount,
-          }}
-        />
-      </main>
-    </div>
-  );
-};
 
 export default ActivityLevelReport;
 
