@@ -1,4 +1,6 @@
-import { Button, Select, message, Row, Col } from 'antd';
+import {
+  Button, Select, message, Row, Col,
+} from 'antd';
 import React, { useState, useEffect, useReducer } from 'react';
 import {
   LineChart,
@@ -56,7 +58,7 @@ export default function PlotterModal({
         plotData,
         setPlotData,
         plotId,
-        forceUpdate
+        forceUpdate,
       );
       setConnectionOpen(true);
       setDeviceDisconnect(false);
@@ -72,7 +74,7 @@ export default function PlotterModal({
   };
 
   return (
-    <div id='console-container' className={show ? 'open' : ''}>
+    <div id="console-container" className={show ? 'open' : ''}>
       <div style={{ margin: '5px 0' }}>
         <strong style={{ fontSize: '10' }}>Baud Rate: </strong>
         <Select
@@ -96,28 +98,28 @@ export default function PlotterModal({
           <Select.Option value={115200}>115200</Select.Option>
         </Select>
         <Button
-          id='connect-button'
+          id="connect-button"
           onClick={() => handleConnect()}
           style={{ marginLeft: '10px' }}
         >
           {connectionOpen ? 'Disconnect' : 'Connect'}
         </Button>
       </div>
-      <div id='content-container' style={{ backgroundColor: '#EEEEEE' }}>
-        <ResponsiveContainer width='90%' height='100%'>
-          <LineChart width='100%' height='100%' data={plotData} key={plotData}>
+      <div id="content-container" style={{ backgroundColor: '#EEEEEE' }}>
+        <ResponsiveContainer width="90%" height="100%">
+          <LineChart width="100%" height="100%" data={plotData} key={plotData}>
             <Line
-              type='step'
-              dataKey='input'
-              stroke='#8884d8'
+              type="step"
+              dataKey="input"
+              stroke="#8884d8"
               dot={false}
               isAnimationActive={false}
             />
-            <CartesianGrid stroke='#ccc' />
+            <CartesianGrid stroke="#ccc" />
             <XAxis
-              dataKey='id'
-              type='number'
-              interval='preserveStartEnd'
+              dataKey="id"
+              type="number"
+              interval="preserveStartEnd"
               domain={[
                 'dataMax-100',
                 (dataMax) => (dataMax < 200 ? 200 : dataMax),
@@ -132,22 +134,22 @@ export default function PlotterModal({
         <Col span={12} />
         <Col span={6}>
           {deviceDisconnect ? (
-            <Message message='Device disconnected'></Message>
+            <Message message="Device disconnected" />
           ) : (
-            <Message message='Device Connected' type='success'></Message>
+            <Message message="Device Connected" type="success" />
           )}
         </Col>
         <Col span={6}>
           {connectionOpen ? (
             <Message
-              message='Serial Plotter Connection Opened'
-              type='success'
-            ></Message>
+              message="Serial Plotter Connection Opened"
+              type="success"
+            />
           ) : (
             <Message
-              message='Serial Plotter Connection Not Opened'
-              type='info'
-            ></Message>
+              message="Serial Plotter Connection Not Opened"
+              type="info"
+            />
           )}
         </Col>
       </Row>

@@ -1,7 +1,6 @@
 import { message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavBar from '../../components/NavBar/NavBar';
 import { getStudentClassroom } from '../../Utils/requests';
 import './Student.less';
 
@@ -33,35 +32,32 @@ function Student() {
   };
 
   return (
-    <div className='container nav-padding'>
-      <NavBar />
-      <div id='activity-container'>
-        <div id='header'>
-          <div>Select your Activity</div>
-        </div>
-        <ul>
-          {learningStandard.activities ? (
-            learningStandard.activities
-              .sort((activity1, activity2) => activity1.number - activity2.number)
-              .map((activity) => (
-                <div
-                  key={activity.id}
-                  id='list-item-wrapper'
-                  onClick={() => handleSelection(activity)}
-                >
-                  <li>{`${learningStandard.name}: Activity ${activity.number}`}</li>
-                </div>
-              ))
-          ) : (
-            <div>
-              <p>There is currently no active learning standard set.</p>
-              <p>
-                When your classroom manager selects one, it will appear here.
-              </p>
-            </div>
-          )}
-        </ul>
+    <div id="activity-container">
+      <div id="header">
+        <div>Select your Activity</div>
       </div>
+      <ul>
+        {learningStandard.activities ? (
+          learningStandard.activities
+            .sort((activity1, activity2) => activity1.number - activity2.number)
+            .map((activity) => (
+              <div
+                key={activity.id}
+                id="list-item-wrapper"
+                onClick={() => handleSelection(activity)}
+              >
+                <li>{`${learningStandard.name}: Activity ${activity.number}`}</li>
+              </div>
+            ))
+        ) : (
+          <div>
+            <p>There is currently no active learning standard set.</p>
+            <p>
+              When your classroom manager selects one, it will appear here.
+            </p>
+          </div>
+        )}
+      </ul>
     </div>
   );
 }

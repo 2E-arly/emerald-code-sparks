@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import {
   createSubmission,
   getSubmission,
@@ -7,16 +8,15 @@ import {
   updateAuthorizedWorkspace,
   updateActivityTemplate,
 } from '../../../Utils/requests';
-import { message } from 'antd';
 
 const AvrboyArduino = window.AvrgirlArduino;
 
 export const setLocalSandbox = (workspaceRef) => {
-  let workspaceDom = window.Blockly.Xml.workspaceToDom(workspaceRef);
-  let workspaceText = window.Blockly.Xml.domToText(workspaceDom);
+  const workspaceDom = window.Blockly.Xml.workspaceToDom(workspaceRef);
+  const workspaceText = window.Blockly.Xml.domToText(workspaceDom);
   const localActivity = JSON.parse(localStorage.getItem('sandbox-activity'));
 
-  let lastActivity = { ...localActivity, template: workspaceText };
+  const lastActivity = { ...localActivity, template: workspaceText };
   localStorage.setItem('sandbox-activity', JSON.stringify(lastActivity));
 };
 
@@ -24,8 +24,8 @@ export const setLocalSandbox = (workspaceRef) => {
 export const getXml = (workspaceRef, shouldAlert = true) => {
   const { Blockly } = window;
 
-  let xml = Blockly.Xml.workspaceToDom(workspaceRef);
-  let xml_text = Blockly.Xml.domToText(xml);
+  const xml = Blockly.Xml.workspaceToDom(workspaceRef);
+  const xml_text = Blockly.Xml.domToText(xml);
   if (shouldAlert) alert(xml_text);
   return xml_text;
 };
@@ -33,7 +33,7 @@ export const getXml = (workspaceRef, shouldAlert = true) => {
 // Generates javascript code from blockly canvas
 export const getJS = (workspaceRef) => {
   window.Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-  let code = window.Blockly.JavaScript.workspaceToCode(workspaceRef);
+  const code = window.Blockly.JavaScript.workspaceToCode(workspaceRef);
   alert(code);
   return code;
 };
@@ -41,7 +41,7 @@ export const getJS = (workspaceRef) => {
 // Generates Arduino code from blockly canvas
 export const getArduino = (workspaceRef, shouldAlert = true) => {
   window.Blockly.Arduino.INFINITE_LOOP_TRAP = null;
-  let code = window.Blockly.Arduino.workspaceToCode(workspaceRef);
+  const code = window.Blockly.Arduino.workspaceToCode(workspaceRef);
   if (shouldAlert) alert(code);
   return code;
 };
@@ -58,15 +58,15 @@ export const compileArduinoCode = async (
   setSelectedCompile,
   setCompileError,
   activity,
-  isStudent
+  isStudent,
 ) => {
   setSelectedCompile(true);
   const sketch = getArduino(workspaceRef, false);
-  let workspaceDom = window.Blockly.Xml.workspaceToDom(workspaceRef);
-  let workspaceText = window.Blockly.Xml.domToText(workspaceDom);
+  const workspaceDom = window.Blockly.Xml.workspaceToDom(workspaceRef);
+  const workspaceText = window.Blockly.Xml.domToText(workspaceDom);
   let path;
   isStudent ? (path = '/submissions') : (path = '/sandbox/submission');
-  let id = isStudent ? activity.id : undefined;
+  const id = isStudent ? activity.id : undefined;
 
   // create an initial submission
   const initialSubmission = await createSubmission(
@@ -74,7 +74,7 @@ export const compileArduinoCode = async (
     workspaceText,
     sketch,
     path,
-    isStudent
+    isStudent,
   );
 
   // if we fail to create submission
@@ -82,22 +82,21 @@ export const compileArduinoCode = async (
     compileFail(
       setSelectedCompile,
       setCompileError,
-      'Oops. Something went wrong, please check your internet connection.'
+      'Oops. Something went wrong, please check your internet connection.',
     );
     return;
   }
   // Get the submission Id and send a request to get the submission every
   // 0.25 second until the submission status equal to COMPLETE.
   intervalId = setInterval(
-    () =>
-      getAndFlashSubmission(
-        initialSubmission.data.id,
-        path,
-        isStudent,
-        setSelectedCompile,
-        setCompileError
-      ),
-    250
+    () => getAndFlashSubmission(
+      initialSubmission.data.id,
+      path,
+      isStudent,
+      setSelectedCompile,
+      setCompileError,
+    ),
+    250,
   );
 
   // Set a timeout of 20 second. If the submission status fail to update to
@@ -109,7 +108,7 @@ export const compileArduinoCode = async (
       compileFail(
         setSelectedCompile,
         setCompileError,
-        'Oops. Something went wrong, please try again.'
+        'Oops. Something went wrong, please try again.',
       );
     }
   }, 20000);
@@ -120,7 +119,7 @@ const getAndFlashSubmission = async (
   path,
   isStudent,
   setSelectedCompile,
-  setCompileError
+  setCompileError,
 ) => {
   // get the submission
   const response = await getSubmission(id, path, isStudent);
@@ -133,7 +132,7 @@ const getAndFlashSubmission = async (
     compileFail(
       setSelectedCompile,
       setCompileError,
-      'Oops. Something went wrong, please check your internet connection.'
+      'Oops. Something went wrong, please check your internet connection.',
     );
     return;
   }
@@ -157,7 +156,7 @@ const flashArduino = async (response, setSelectedCompile, setCompileError) => {
     // if we get a success status from the submission, send it to arduino
     if (response.data.success) {
       // converting base 64 to hex
-      let Hex = atob(response.data.hex).toString();
+      const Hex = atob(response.data.hex).toString();
 
       const avrgirl = new AvrboyArduino({
         board: 'uno',
@@ -187,21 +186,21 @@ const flashArduino = async (response, setSelectedCompile, setCompileError) => {
 
 // save current workspace
 export const handleSave = async (activityId, workspaceRef, replay) => {
-  let xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
-  let xml_text = window.Blockly.Xml.domToText(xml);
+  const xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
+  const xml_text = window.Blockly.Xml.domToText(xml);
   return await saveWorkspace(activityId, xml_text, replay);
 };
 
 export const handleCreatorSaveActivityLevel = async (activityId, workspaceRef, blocksList) => {
-  let xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
-  let xml_text = window.Blockly.Xml.domToText(xml);
+  const xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
+  const xml_text = window.Blockly.Xml.domToText(xml);
 
   return await updateActivityLevelTemplate(activityId, xml_text, blocksList);
 };
 
 export const handleCreatorSaveActivity = async (activityId, workspaceRef) => {
-  let xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
-  let xml_text = window.Blockly.Xml.domToText(xml);
+  const xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
+  const xml_text = window.Blockly.Xml.domToText(xml);
 
   return await updateActivityTemplate(activityId, xml_text);
 };
@@ -211,21 +210,21 @@ export const handleSaveAsWorkspace = async (
   description,
   workspaceRef,
   blocksList,
-  classroomId
+  classroomId,
 ) => {
   if (!blocksList) {
     blocksList = [];
   }
 
-  let xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
-  let xml_text = window.Blockly.Xml.domToText(xml);
+  const xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
+  const xml_text = window.Blockly.Xml.domToText(xml);
 
   return await createAuthorizedWorkspace(
     name,
     description,
     xml_text,
     blocksList,
-    classroomId
+    classroomId,
   );
 };
 
@@ -233,8 +232,8 @@ export const handleUpdateWorkspace = async (id, workspaceRef, blocksList) => {
   if (!blocksList) {
     blocksList = [];
   }
-  let xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
-  let xml_text = window.Blockly.Xml.domToText(xml);
+  const xml = window.Blockly.Xml.workspaceToDom(workspaceRef.current);
+  const xml_text = window.Blockly.Xml.domToText(xml);
 
   return await updateAuthorizedWorkspace(id, xml_text, blocksList);
 };

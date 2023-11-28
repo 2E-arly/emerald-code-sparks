@@ -1,12 +1,12 @@
 import { Modal, Button, message } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import LessonModuleSelect from './LessonModuleSelect';
 import {
   getLessonModule,
   setSelection,
   getLessonModuleActivities,
 } from '../../../../../Utils/requests';
-import { useSearchParams } from 'react-router-dom';
 
 export default function LessonModuleModal({
   setActiveLessonModule,
@@ -72,9 +72,9 @@ export default function LessonModuleModal({
   };
 
   return (
-    <div id='lesson-module-modal'>
-      <button id='change-lesson-btn' onClick={showModal}>
-        <p id='test'>Change</p>
+    <div id="lesson-module-modal">
+      <button id="change-lesson-btn" onClick={showModal}>
+        <p id="test">Change</p>
       </button>
       <Modal
         title={
@@ -84,11 +84,11 @@ export default function LessonModuleModal({
         }
         visible={visible}
         onCancel={handleCancel}
-        width='60vw'
+        width="60vw"
         footer={[
           <Button
-            key='ok'
-            type='primary'
+            key="ok"
+            type="primary"
             disabled={selected.id === undefined}
             onClick={activePanel === 'panel-1' ? handleReview : handleOk}
           >

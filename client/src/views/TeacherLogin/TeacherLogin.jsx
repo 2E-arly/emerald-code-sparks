@@ -1,7 +1,6 @@
 import { message } from 'antd';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NavBar from '../../components/NavBar/NavBar';
 import { postUser, setUserSession } from '../../Utils/AuthRequests';
 import './TeacherLogin.less';
 
@@ -25,7 +24,7 @@ export default function TeacherLogin() {
 
   const handleLogin = () => {
     setLoading(true);
-    let body = { identifier: email.value, password: password.value };
+    const body = { identifier: email.value, password: password.value };
 
     postUser(body)
       .then((response) => {
@@ -34,7 +33,7 @@ export default function TeacherLogin() {
         if (response.data.user.role.name === 'Content Creator') {
           navigate('/ccdashboard');
         } else if (response.data.user.role.name === 'Researcher') {
-          navigate('/report');
+          navigate('/researcher/report');
         } else {
           navigate('/dashboard');
         }
@@ -46,39 +45,36 @@ export default function TeacherLogin() {
   };
 
   return (
-    <div className='container nav-padding'>
-      <NavBar />
-      <div id='content-wrapper'>
-        <form
-          id='box'
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') handleLogin();
-          }}
-        >
-          <div id='box-title'>User Login</div>
-          <input
-            type='email'
-            {...email}
-            placeholder='Email'
-            autoComplete='username'
-          />
-          <input
-            type='password'
-            {...password}
-            placeholder='Password'
-            autoComplete='current-password'
-          />
-          <p id='forgot-password' onClick={() => navigate('/forgot-password')}>
-            Forgot Password?
-          </p>
-          <input
-            type='button'
-            value={loading ? 'Loading...' : 'Login'}
-            onClick={handleLogin}
-            disabled={loading}
-          />
-        </form>
-      </div>
+    <div id="content-wrapper">
+      <form
+        id="box"
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') handleLogin();
+        }}
+      >
+        <div id="box-title">User Login</div>
+        <input
+          type="email"
+          {...email}
+          placeholder="Email"
+          autoComplete="username"
+        />
+        <input
+          type="password"
+          {...password}
+          placeholder="Password"
+          autoComplete="current-password"
+        />
+        <p id="forgot-password" onClick={() => navigate('/forgot-password')}>
+          Forgot Password?
+        </p>
+        <input
+          type="button"
+          value={loading ? 'Loading...' : 'Login'}
+          onClick={handleLogin}
+          disabled={loading}
+        />
+      </form>
     </div>
   );
 }

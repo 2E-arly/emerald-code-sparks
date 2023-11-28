@@ -1,9 +1,9 @@
 import React from 'react';
 import { Alert } from 'antd';
 
-const Message = ({ type, message }) => {
-  return <Alert message={message} type={type}></Alert>;
-};
+function Message({ type, message }) {
+  return <Alert message={message} type={type} />;
+}
 
 Message.defaultProps = {
   type: 'error',

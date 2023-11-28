@@ -1,19 +1,24 @@
-import React, { useEffect, useRef, useState, useReducer } from 'react';
+import React, {
+  useEffect, useRef, useState, useReducer,
+} from 'react';
 import '../../ActivityLevels.less';
+import {
+  message, Spin, Row, Col, Alert, Dropdown, Menu,
+} from 'antd';
+import { useNavigate } from 'react-router-dom';
 import {
   compileArduinoCode,
   handleCreatorSaveActivity,
   handleCreatorSaveActivityLevel,
   handleUpdateWorkspace,
 } from '../../Utils/helpers';
-import { message, Spin, Row, Col, Alert, Dropdown, Menu } from 'antd';
 import CodeModal from '../modals/CodeModal';
 import SaveAsModal from '../modals/SaveAsModal';
 import ConsoleModal from '../modals/ConsoleModal';
 import PlotterModal from '../modals/PlotterModal';
 import StudentToolboxMenu from '../modals/StudentToolboxMenu';
 import LoadWorkspaceModal from '../modals/LoadWorkspaceModal';
-import DisplayDiagramModal from '../modals/DisplayDiagramModal'
+import DisplayDiagramModal from '../modals/DisplayDiagramModal';
 import {
   connectToPort,
   handleCloseConnection,
@@ -25,7 +30,6 @@ import {
 } from '../../../../Utils/requests';
 import ArduinoLogo from '../Icons/ArduinoLogo';
 import PlotterLogo from '../Icons/PlotterLogo';
-import { useNavigate } from 'react-router-dom';
 
 let plotId = 1;
 
@@ -66,7 +70,7 @@ export default function ContentCreatorCanvas({
     if (res.data) {
       // set up the canvas
       if (workspaceRef.current) workspaceRef.current.clear();
-      let xml = window.Blockly.Xml.textToDom(res.data.template);
+      const xml = window.Blockly.Xml.textToDom(res.data.template);
       window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
 
       // if we are not in sandbox mode, only the canvas will be changed.
@@ -74,10 +78,10 @@ export default function ContentCreatorCanvas({
       if (!isSandbox) {
         const toolboxRes = await getAuthorizedWorkspaceToolbox(workspaceId);
         if (toolboxRes.data) {
-          let tempCategories = [],
-            tempToolBox = [];
-          toolboxRes.data.toolbox &&
-            toolboxRes.data.toolbox.forEach(([category, blocks]) => {
+          const tempCategories = [];
+          let tempToolBox = [];
+          toolboxRes.data.toolbox
+            && toolboxRes.data.toolbox.forEach(([category, blocks]) => {
               tempCategories.push(category);
               tempToolBox = [
                 ...tempToolBox,
@@ -95,8 +99,8 @@ export default function ContentCreatorCanvas({
         // set up the student toolbox
         const toolboxRes = await getAuthorizedWorkspaceToolbox(res.data.id);
         if (toolboxRes.data) {
-          //update localstorage
-          let localActivity = {
+          // update localstorage
+          const localActivity = {
             ...res.data,
             selectedToolbox: toolboxRes.data.toolbox,
             toolbox: activity.toolbox,
@@ -105,19 +109,17 @@ export default function ContentCreatorCanvas({
         }
       }
       return true;
-    } else {
-      message.error(res.err);
-      return false;
     }
+    message.error(res.err);
+    return false;
   };
 
   const handleGoBack = () => {
     if (
       window.confirm(
-        'All unsaved progress will be lost. Do you still want to go back?'
+        'All unsaved progress will be lost. Do you still want to go back?',
       )
-    )
-      navigate(-1);
+    ) navigate(-1);
   };
 
   useEffect(() => {
@@ -127,7 +129,7 @@ export default function ContentCreatorCanvas({
       if (!workspaceRef.current && activity && Object.keys(activity).length !== 0) {
         setWorkspace();
 
-        let xml = isMentorActivity
+        const xml = isMentorActivity
           ? window.Blockly.Xml.textToDom(activity.activity_template)
           : window.Blockly.Xml.textToDom(activity.template);
         window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
@@ -143,7 +145,7 @@ export default function ContentCreatorCanvas({
       const res = await handleCreatorSaveActivityLevel(
         activity.id,
         workspaceRef,
-        studentToolbox
+        studentToolbox,
       );
       if (res.err) {
         message.error(res.err);
@@ -164,7 +166,7 @@ export default function ContentCreatorCanvas({
         const updateRes = await handleUpdateWorkspace(
           activity.id,
           workspaceRef,
-          studentToolbox
+          studentToolbox,
         );
         if (updateRes.err) {
           message.error(updateRes.err);
@@ -180,13 +182,11 @@ export default function ContentCreatorCanvas({
   };
 
   const handleUndo = () => {
-    if (workspaceRef.current.undoStack_.length > 0)
-      workspaceRef.current.undo(false);
+    if (workspaceRef.current.undoStack_.length > 0) workspaceRef.current.undo(false);
   };
 
   const handleRedo = () => {
-    if (workspaceRef.current.redoStack_.length > 0)
-      workspaceRef.current.undo(true);
+    if (workspaceRef.current.redoStack_.length > 0) workspaceRef.current.undo(true);
   };
 
   const handleConsole = async () => {
@@ -199,7 +199,7 @@ export default function ContentCreatorCanvas({
       // connect to port
       await handleOpenConnection(9600, 'newLine');
       // if fail to connect to port, return
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -229,9 +229,9 @@ export default function ContentCreatorCanvas({
         plotData,
         setPlotData,
         plotId,
-        forceUpdate
+        forceUpdate,
       );
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -250,13 +250,13 @@ export default function ContentCreatorCanvas({
   const handleCompile = async () => {
     if (showConsole || showPlotter) {
       message.warning(
-        'Close Serial Monitor and Serial Plotter before uploading your code'
+        'Close Serial Monitor and Serial Plotter before uploading your code',
       );
     } else {
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         await connectToPort();
       }
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -266,15 +266,15 @@ export default function ContentCreatorCanvas({
         setSelectedCompile,
         setCompileError,
         activity,
-        false
+        false,
       );
     }
   };
 
   const menu = (
     <Menu>
-      <Menu.Item id='menu-save' onClick={handleCreatorSave}>
-        <i className='fa fa-save' />
+      <Menu.Item id="menu-save" onClick={handleCreatorSave}>
+        <i className="fa fa-save" />
         &nbsp; Save
       </Menu.Item>
       <SaveAsModal
@@ -296,69 +296,69 @@ export default function ContentCreatorCanvas({
         <PlotterLogo />
         &nbsp; Show Serial Plotter
       </Menu.Item>
-      <CodeModal title={'XML'} workspaceRef={workspaceRef.current} />
+      <CodeModal title="XML" workspaceRef={workspaceRef.current} />
       <Menu.Item>
-        <CodeModal title={'Arduino Code'} workspaceRef={workspaceRef.current} />
+        <CodeModal title="Arduino Code" workspaceRef={workspaceRef.current} />
       </Menu.Item>
     </Menu>
   );
 
   return (
-    <div id='horizontal-container' className='flex flex-column'>
-      <div className='flex flex-row'>
+    <div id="horizontal-container" className="flex flex-column">
+      <div className="flex flex-row">
         <div
-          id='bottom-container'
-          className='flex flex-column vertical-container overflow-visible'
+          id="bottom-container"
+          className="flex flex-column vertical-container overflow-visible"
         >
           <Spin
-            tip='Compiling Code Please Wait... It may take up to 20 seconds to compile your code.'
-            className='compilePop'
-            size='large'
+            tip="Compiling Code Please Wait... It may take up to 20 seconds to compile your code."
+            className="compilePop"
+            size="large"
             spinning={selectedCompile}
           >
-            <Row id='icon-control-panel'>
-              <Col flex='none' id='section-header'>
+            <Row id="icon-control-panel">
+              <Col flex="none" id="section-header">
                 {activity.lesson_module_name
                   ? `${activity.lesson_module_name} - Activity ${activity.number} - ${
-                      isMentorActivity ? 'Activity' : 'Activity Level'
-                    } Template`
+                    isMentorActivity ? 'Activity' : 'Activity Level'
+                  } Template`
                   : activity.name
-                  ? `Workspace: ${activity.name}`
-                  : 'New Workspace!'}
+                    ? `Workspace: ${activity.name}`
+                    : 'New Workspace!'}
               </Col>
-              <Col flex='auto'>
-                <Row align='middle' justify='end' id='description-container'>
-                  <Col flex={'30px'}>
+              <Col flex="auto">
+                <Row align="middle" justify="end" id="description-container">
+                  <Col flex="30px">
                     <button
                       onClick={handleGoBack}
-                      id='link'
-                      className='flex flex-column'
+                      id="link"
+                      className="flex flex-column"
                     >
-                      <i id='icon-btn' className='fa fa-arrow-left' />
+                      <i id="icon-btn" className="fa fa-arrow-left" />
                     </button>
                   </Col>
-                  <Col flex='auto' />
+                  <Col flex="auto" />
                   <Row>
-                    <Col className='flex flex-row'>
+                    <Col className="flex flex-row">
                       <Col
-                        className='flex flex-row'
-                        id='save-dropdown-container'
+                        className="flex flex-row"
+                        id="save-dropdown-container"
                       >
                         <Dropdown overlay={menu}>
-                          <i id='save-icon-btn' className='fa fa-save' />
+                          <i id="save-icon-btn" className="fa fa-save" />
                         </Dropdown>
-                        <i className='fas fa-angle-down' id='caret'></i>
+                        <i className="fas fa-angle-down" id="caret" />
                       </Col>
                     </Col>
-                    <Col className='flex flex-row' id='redo-undo-container'>
+                    <Col className="flex flex-row" id="redo-undo-container">
                       <button
                         onClick={handleUndo}
-                        id='link'
-                        className='flex flex-column'
+                        id="link"
+                        className="flex flex-column"
                       >
                         <i
-                          id='icon-btn'
-                          className='fa fa-undo-alt'
+                          id="icon-btn"
+                          className="fa fa-undo-alt"
                           style={
                             workspaceRef.current
                               ? workspaceRef.current.undoStack_.length < 1
@@ -370,17 +370,17 @@ export default function ContentCreatorCanvas({
                           onMouseLeave={() => setHoverUndo(false)}
                         />
                         {hoverUndo && (
-                          <div className='popup ModalCompile4'>Undo</div>
+                          <div className="popup ModalCompile4">Undo</div>
                         )}
                       </button>
                       <button
                         onClick={handleRedo}
-                        id='link'
-                        className='flex flex-column'
+                        id="link"
+                        className="flex flex-column"
                       >
                         <i
-                          id='icon-btn'
-                          className='fa fa-redo-alt'
+                          id="icon-btn"
+                          className="fa fa-redo-alt"
                           style={
                             workspaceRef.current
                               ? workspaceRef.current.redoStack_.length < 1
@@ -392,41 +392,41 @@ export default function ContentCreatorCanvas({
                           onMouseLeave={() => setHoverRedo(false)}
                         />
                         {hoverRedo && (
-                          <div className='popup ModalCompile4'>Redo</div>
+                          <div className="popup ModalCompile4">Redo</div>
                         )}
                       </button>
                     </Col>
-                    <Col className='flex flex-row'>
+                    <Col className="flex flex-row">
                       <div
-                        id='action-btn-container'
-                        className='flex space-around'
+                        id="action-btn-container"
+                        className="flex space-around"
                       >
                         <ArduinoLogo
                           setHoverCompile={setHoverCompile}
                           handleCompile={handleCompile}
                         />
                         {hoverCompile && (
-                          <div className='popup ModalCompile'>
+                          <div className="popup ModalCompile">
                             Upload to Arduino
                           </div>
                         )}
-                  <DisplayDiagramModal
-                      image={activity.images}
-                    />
+                        <DisplayDiagramModal
+                          image={activity.images}
+                        />
                         <i
                           onClick={() => handleConsole()}
-                          className='fas fa-terminal hvr-info'
+                          className="fas fa-terminal hvr-info"
                           style={{ marginLeft: '6px' }}
                           onMouseEnter={() => setHoverConsole(true)}
                           onMouseLeave={() => setHoverConsole(false)}
                         />
                         {hoverConsole && (
-                          <div className='popup ModalCompile'>
+                          <div className="popup ModalCompile">
                             Show Serial Monitor
                           </div>
                         )}
                         <Dropdown overlay={menuShow}>
-                          <i className='fas fa-ellipsis-v'></i>
+                          <i className="fas fa-ellipsis-v" />
                         </Dropdown>
                       </div>
                     </Col>
@@ -434,7 +434,7 @@ export default function ContentCreatorCanvas({
                 </Row>
               </Col>
             </Row>
-            <div id='blockly-canvas' />
+            <div id="blockly-canvas" />
           </Spin>
         </div>
         {!isMentorActivity && (
@@ -450,7 +450,7 @@ export default function ContentCreatorCanvas({
           show={showConsole}
           connectionOpen={connectionOpen}
           setConnectionOpen={setConnectionOpen}
-        ></ConsoleModal>
+        />
         <PlotterModal
           show={showPlotter}
           connectionOpen={connectionOpen}
@@ -462,13 +462,13 @@ export default function ContentCreatorCanvas({
       </div>
 
       {/* This xml is for the blocks' menu we will provide. Here are examples on how to include categories and subcategories */}
-      <xml id='toolbox' is='Blockly workspace'>
+      <xml id="toolbox" is="Blockly workspace">
         {
           // Maps out block categories
-          activity &&
-            activity.toolbox &&
-            activity.toolbox.map(([category, blocks]) => (
-              <category name={category} is='Blockly category' key={category}>
+          activity
+            && activity.toolbox
+            && activity.toolbox.map(([category, blocks]) => (
+              <category name={category} is="Blockly category" key={category}>
                 {
                   // maps out blocks in category
                   // eslint-disable-next-line
@@ -476,7 +476,7 @@ export default function ContentCreatorCanvas({
                     return (
                       <block
                         type={block.name}
-                        is='Blockly block'
+                        is="Blockly block"
                         key={block.name}
                       />
                     );
@@ -490,10 +490,10 @@ export default function ContentCreatorCanvas({
       {compileError && (
         <Alert
           message={compileError}
-          type='error'
+          type="error"
           closable
           onClose={(e) => setCompileError('')}
-        ></Alert>
+        />
       )}
     </div>
   );

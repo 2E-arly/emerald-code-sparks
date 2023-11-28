@@ -1,119 +1,70 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import NavBar from '../../components/NavBar/NavBar';
-import { getSession } from '../../Utils/requests';
+import { getSessions, getStudent, getStudy } from '../../Utils/requests';
 import './StudyLevelReportView.less';
 
-const StudyLevelReportView = () => {
+function StudyLevelReportView() {
   const { id } = useParams();
-  const [session, setSession] = useState({});
-  const [studentName, setStudentsName] = useState([]);
-  const [studentPartner, setStudentsPartner] = useState([]);
-  const [className, setClassName] = useState([]);
-  const [clicks, setClicks] = useState(0);
+  const [study, setStudy] = useState({});
+  const [students, setStudents] = useState([]);
   const navigate = useNavigate();
+  const [usableSessions, setUsableSessions] = useState([]);
 
-  useEffect(function () {
+  useEffect(() => {
     const getData = async () => {
-      const session = await getSession(id);
-      setSession(session.data);
+      const study = await getStudy(id).then((x) => x.data);
+      setStudy(study);
+      console.log(study);
 
-      const fetchedStudents = session.data.students[0].name;
-      setStudentsName(fetchedStudents);
+      const consentingStudents = [];
+      for (const student of study.students) {
+        if (study.student_invites.some((el) => el.student === student.id && el.Consent)) {
+          consentingStudents.push(await getStudent(student.id).then((x) => x.data));
+        }
+      }
 
-      const fetchedPartner = session.data.students
-        .slice(1)
-        .map((student) => student.name);
-      setStudentsPartner(fetchedPartner);
+      setStudents(consentingStudents);
+      console.log(students);
+      const allSessions = await getSessions().then((x) => x.data);
+      const usableSessions = [];
+      for (const session of allSessions) {
+        if (session.students.every((sessionStudent) => students.some((student) => student.id === sessionStudent.id))) {
+          usableSessions.push(session);
+        }
+      }
 
-      const fetchedClassroomNames = session.data.classroom.name;
-      setClassName(fetchedClassroomNames);
+      setUsableSessions(usableSessions);
+      console.log(usableSessions);
 
-      const l = session.data.saves[0]?.replay.length;
-      const fetchedClicks = session.data.saves[0]?.replay[l - 1]?.clicks;
-      setClicks(fetchedClicks);
+      // const l = session.data.saves[0]?.replay.length;
+      // const fetchedClicks = session.data.saves[0]?.replay[l - 1]?.clicks;
+      // setClicks(fetchedClicks);
     };
     getData();
   }, []);
 
   const timeConverter = (timestamp) => {
-    var dateVal = new Date(timestamp).toLocaleString();
+    const dateVal = new Date(timestamp).toLocaleString();
     return dateVal;
   };
 
-  const calculateEndTime = () => {
-    if (session.saves?.length) {
-      if (session.saves[session.saves.length - 1].created_at) {
-        return session.saves[session.saves.length - 1].created_at;
-      }
-      return 'Unknown, no saves';
-    }
-  };
-
-  const showReplayButton = () => {
-    if (session.saves?.length) {
-      const latestSave = session.saves[session.saves.length - 1];
-      return (
-        <Link id='replay-btn' className='btn' to={`/replay/${latestSave.id}`}>
-          View Code Replay
-        </Link>
-      );
-    }
-  };
   return (
-    <div className='container nav-padding'>
-      <NavBar />
-      <div className='menu-bar'>
-        <div id='activity-level-report-header'>Study Level Report</div>
+    <>
+      <div className="menu-bar">
+        <div id="activity-level-report-header">Study Level Report</div>
         <button
-          id={'activity-level-return'}
+          id="activity-level-return"
           className={`btn-${'primary'} btn-${'sm'}`}
-          type='button'
+          type="button"
           onClick={() => navigate(-1)}
         >
           Return to Study Level
         </button>
       </div>
 
-      <main id='content-wrapper'>
-        <section id='container-section'>
-          <section id='student-report-section'>
-            <p>
-              <strong>Student Name: </strong>
-              {studentName}
-            </p>
-            <p>
-              <strong>Partner Name: </strong>
-              {studentPartner.length > 0 ? studentPartner.join(', ') : ''}
-            </p>
-            <p>
-              <strong>Class Name: </strong>
-              {className}
-            </p>
-            <br />
-            <p>
-              <strong>Started: </strong>
-              {timeConverter(session.created_at)}
-            </p>
-            <p>
-              <strong>Ended: </strong>
-              {timeConverter(calculateEndTime())}
-            </p>
-            <p>
-              <strong>Mouse Clicks: </strong>
-              {clicks}
-            </p>
-            <p>
-              <strong>Times Tested: </strong>
-              {session.submissions?.length} times
-            </p>
-          </section>
-        </section>
-        <br />
-        {showReplayButton()}
-      </main>
-    </div>
+      <main id="content-wrapper" />
+    </>
   );
-};
+}
 
 export default StudyLevelReportView;

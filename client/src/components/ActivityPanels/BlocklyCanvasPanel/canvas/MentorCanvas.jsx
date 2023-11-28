@@ -1,14 +1,20 @@
-import React, { useEffect, useRef, useState, useReducer } from 'react';
+import React, {
+  useEffect, useRef, useState, useReducer,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../ActivityLevels.less';
-import { compileArduinoCode, handleUpdateWorkspace,  handleCreatorSaveActivityLevel, handleCreatorSaveActivity } from '../../Utils/helpers';
-import { message, Spin, Row, Col, Alert, Menu, Dropdown } from 'antd';
+import {
+  message, Spin, Row, Col, Alert, Menu, Dropdown,
+} from 'antd';
+import {
+  compileArduinoCode, handleUpdateWorkspace, handleCreatorSaveActivityLevel, handleCreatorSaveActivity,
+} from '../../Utils/helpers';
 import CodeModal from '../modals/CodeModal';
 import ConsoleModal from '../modals/ConsoleModal';
 import PlotterModal from '../modals/PlotterModal';
 import LoadWorkspaceModal from '../modals/LoadWorkspaceModal';
 import SaveAsModal from '../modals/SaveAsModal';
-import DisplayDiagramModal from '../modals/DisplayDiagramModal'
+import DisplayDiagramModal from '../modals/DisplayDiagramModal';
 import StudentToolboxMenu from '../modals/StudentToolboxMenu';
 import {
   connectToPort,
@@ -21,7 +27,9 @@ import PlotterLogo from '../Icons/PlotterLogo';
 
 let plotId = 1;
 
-export default function MentorCanvas({ activity, isSandbox, setActivity,  isMentorActivity }) {
+export default function MentorCanvas({
+  activity, isSandbox, setActivity, isMentorActivity,
+}) {
   const [hoverUndo, setHoverUndo] = useState(false);
   const [hoverRedo, setHoverRedo] = useState(false);
   const [hoverCompile, setHoverCompile] = useState(false);
@@ -59,10 +67,10 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
         //   let xml = window.Blockly.Xml.textToDom(activity.template);
         //   window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
         // }
-        let xml = isMentorActivity
-        ? window.Blockly.Xml.textToDom(activity.activity_template)
-        : window.Blockly.Xml.textToDom(activity.template);
-      window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
+        const xml = isMentorActivity
+          ? window.Blockly.Xml.textToDom(activity.activity_template)
+          : window.Blockly.Xml.textToDom(activity.template);
+        window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
         workspaceRef.current.clearUndo();
       }
     };
@@ -75,7 +83,7 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
     if (res.data) {
       // set up the canvas
       if (workspaceRef.current) workspaceRef.current.clear();
-      let xml = window.Blockly.Xml.textToDom(res.data.template);
+      const xml = window.Blockly.Xml.textToDom(res.data.template);
       window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
       setActivity(res.data);
     } else {
@@ -86,10 +94,10 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
     if (!isSandbox) {
       const toolboxRes = await getAuthorizedWorkspaceToolbox(workspaceId);
       if (toolboxRes.data) {
-        let tempCategories = [],
-          tempToolBox = [];
-        toolboxRes.data.toolbox &&
-          toolboxRes.data.toolbox.forEach(([category, blocks]) => {
+        const tempCategories = [];
+        let tempToolBox = [];
+        toolboxRes.data.toolbox
+          && toolboxRes.data.toolbox.forEach(([category, blocks]) => {
             tempCategories.push(category);
             tempToolBox = [
               ...tempToolBox,
@@ -120,13 +128,11 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
   };
 
   const handleUndo = () => {
-    if (workspaceRef.current.undoStack_.length > 0)
-      workspaceRef.current.undo(false);
+    if (workspaceRef.current.undoStack_.length > 0) workspaceRef.current.undo(false);
   };
 
   const handleRedo = () => {
-    if (workspaceRef.current.redoStack_.length > 0)
-      workspaceRef.current.undo(true);
+    if (workspaceRef.current.redoStack_.length > 0) workspaceRef.current.undo(true);
   };
 
   const handleConsole = async () => {
@@ -139,7 +145,7 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
       // connect to port
       await handleOpenConnection(9600, 'newLine');
       // if fail to connect to port, return
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -169,9 +175,9 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
         plotData,
         setPlotData,
         plotId,
-        forceUpdate
+        forceUpdate,
       );
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -190,13 +196,13 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
   const handleCompile = async () => {
     if (showConsole || showPlotter) {
       message.warning(
-        'Close Serial Monitor and Serial Plotter before uploading your code'
+        'Close Serial Monitor and Serial Plotter before uploading your code',
       );
     } else {
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         await connectToPort();
       }
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -206,7 +212,7 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
         setSelectedCompile,
         setCompileError,
         activity,
-        false
+        false,
       );
     }
   };
@@ -214,10 +220,9 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
   const handleGoBack = () => {
     if (
       window.confirm(
-        'All unsaved progress will be lost. Do you still want to go back?'
+        'All unsaved progress will be lost. Do you still want to go back?',
       )
-    )
-      navigate(-1);
+    ) navigate(-1);
   };
   const handleCreatorSave = async () => {
     // Save activity template
@@ -226,7 +231,7 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
       const res = await handleCreatorSaveActivityLevel(
         activity.id,
         workspaceRef,
-        studentToolbox
+        studentToolbox,
       );
       if (res.err) {
         message.error(res.err);
@@ -247,7 +252,7 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
         const updateRes = await handleUpdateWorkspace(
           activity.id,
           workspaceRef,
-          studentToolbox
+          studentToolbox,
         );
         if (updateRes.err) {
           message.error(updateRes.err);
@@ -267,17 +272,17 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
         <PlotterLogo />
         &nbsp; Show Serial Plotter
       </Menu.Item>
-      <CodeModal title={'XML'} workspaceRef={workspaceRef.current} />
+      <CodeModal title="XML" workspaceRef={workspaceRef.current} />
       <Menu.Item>
-        <CodeModal title={'Arduino Code'} workspaceRef={workspaceRef.current} />
+        <CodeModal title="Arduino Code" workspaceRef={workspaceRef.current} />
       </Menu.Item>
     </Menu>
   );
 
   const menuSave = (
     <Menu>
-      <Menu.Item id='menu-save' onClick={handleCreatorSave} key='test'>
-        <i className='fa fa-save'/>
+      <Menu.Item id="menu-save" onClick={handleCreatorSave} key="test">
+        <i className="fa fa-save" />
         &nbsp; Save to template
       </Menu.Item>
       <SaveAsModal
@@ -294,59 +299,59 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
   );
 
   return (
-    <div id='horizontal-container' className='flex flex-column'>
-      <div className='flex flex-row'>
+    <div id="horizontal-container" className="flex flex-column">
+      <div className="flex flex-row">
         <div
-          id='bottom-container'
-          className='flex flex-column vertical-container overflow-visible'
+          id="bottom-container"
+          className="flex flex-column vertical-container overflow-visible"
         >
           <Spin
-            tip='Compiling Code Please Wait... It may take up to 20 seconds to compile your code.'
-            className='compilePop'
-            size='large'
+            tip="Compiling Code Please Wait... It may take up to 20 seconds to compile your code."
+            className="compilePop"
+            size="large"
             spinning={selectedCompile}
           >
-            <Row id='icon-control-panel'>
-              <Col flex='none' id='section-header'>
+            <Row id="icon-control-panel">
+              <Col flex="none" id="section-header">
                 {activity.lesson_module_name
                   ? `${activity.lesson_module_name} - Activity ${activity.number}`
                   : activity.name
-                  ? `Workspace: ${activity.name}`
-                  : 'New Workspace!'}
+                    ? `Workspace: ${activity.name}`
+                    : 'New Workspace!'}
               </Col>
-              <Col flex='auto'>
-                <Row align='middle' justify='end' id='description-container'>
-                  <Col flex={'30px'}>
+              <Col flex="auto">
+                <Row align="middle" justify="end" id="description-container">
+                  <Col flex="30px">
                     <button
                       onClick={handleGoBack}
-                      id='link'
-                      className='flex flex-column'
+                      id="link"
+                      className="flex flex-column"
                     >
-                      <i id='icon-btn' className='fa fa-arrow-left' />
+                      <i id="icon-btn" className="fa fa-arrow-left" />
                     </button>
                   </Col>
-                  <Col flex='auto' />
-                  <Row id='right-icon-container'>
+                  <Col flex="auto" />
+                  <Row id="right-icon-container">
                     {!isSandbox ? (
                       <Col
-                        className='flex flex-row'
-                        id='save-dropdown-container'
+                        className="flex flex-row"
+                        id="save-dropdown-container"
                       >
                         <Dropdown overlay={menuSave}>
-                          <i id='icon-btn' className='fa fa-save' />
+                          <i id="icon-btn" className="fa fa-save" />
                         </Dropdown>
-                        <i className='fas fa-angle-down' id='caret'></i>
+                        <i className="fas fa-angle-down" id="caret" />
                       </Col>
                     ) : null}
-                    <Col className='flex flex-row' id='redo-undo-container'>
+                    <Col className="flex flex-row" id="redo-undo-container">
                       <button
                         onClick={handleUndo}
-                        id='link'
-                        className='flex flex-column'
+                        id="link"
+                        className="flex flex-column"
                       >
                         <i
-                          id='icon-btn'
-                          className='fa fa-undo-alt'
+                          id="icon-btn"
+                          className="fa fa-undo-alt"
                           style={
                             workspaceRef.current
                               ? workspaceRef.current.undoStack_.length < 1
@@ -358,17 +363,17 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
                           onMouseLeave={() => setHoverUndo(false)}
                         />
                         {hoverUndo && (
-                          <div className='popup ModalCompile4'>Undo</div>
+                          <div className="popup ModalCompile4">Undo</div>
                         )}
                       </button>
                       <button
                         onClick={handleRedo}
-                        id='link'
-                        className='flex flex-column'
+                        id="link"
+                        className="flex flex-column"
                       >
                         <i
-                          id='icon-btn'
-                          className='fa fa-redo-alt'
+                          id="icon-btn"
+                          className="fa fa-redo-alt"
                           style={
                             workspaceRef.current
                               ? workspaceRef.current.redoStack_.length < 1
@@ -380,41 +385,41 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
                           onMouseLeave={() => setHoverRedo(false)}
                         />
                         {hoverRedo && (
-                          <div className='popup ModalCompile4'>Redo</div>
+                          <div className="popup ModalCompile4">Redo</div>
                         )}
                       </button>
                     </Col>
-                    <Col className='flex flex-row'>
+                    <Col className="flex flex-row">
                       <div
-                        id='action-btn-container'
-                        className='flex space-around'
+                        id="action-btn-container"
+                        className="flex space-around"
                       >
                         <ArduinoLogo
                           setHoverCompile={setHoverCompile}
                           handleCompile={handleCompile}
                         />
                         {hoverCompile && (
-                          <div className='popup ModalCompile'>
+                          <div className="popup ModalCompile">
                             Upload to Arduino
                           </div>
                         )}
-                    <DisplayDiagramModal
-                      image={activity.images}
-                    />
+                        <DisplayDiagramModal
+                          image={activity.images}
+                        />
                         <i
                           onClick={() => handleConsole()}
-                          className='fas fa-terminal hvr-info'
+                          className="fas fa-terminal hvr-info"
                           style={{ marginLeft: '6px' }}
                           onMouseEnter={() => setHoverConsole(true)}
                           onMouseLeave={() => setHoverConsole(false)}
                         />
                         {hoverConsole && (
-                          <div className='popup ModalCompile'>
+                          <div className="popup ModalCompile">
                             Show Serial Monitor
                           </div>
                         )}
                         <Dropdown overlay={menu}>
-                          <i className='fas fa-ellipsis-v'></i>
+                          <i className="fas fa-ellipsis-v" />
                         </Dropdown>
                       </div>
                     </Col>
@@ -422,23 +427,23 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
                 </Row>
               </Col>
             </Row>
-            <div id='blockly-canvas' />
+            <div id="blockly-canvas" />
           </Spin>
-          </div>
-           {!isSandbox && !isMentorActivity && (
-          <StudentToolboxMenu
-            activity={activity}
-            studentToolbox={studentToolbox}
-            setStudentToolbox={setStudentToolbox}
-            openedToolBoxCategories={openedToolBoxCategories}
-            setOpenedToolBoxCategories={setOpenedToolBoxCategories}
-          />
-          )}
+        </div>
+        {!isSandbox && !isMentorActivity && (
+        <StudentToolboxMenu
+          activity={activity}
+          studentToolbox={studentToolbox}
+          setStudentToolbox={setStudentToolbox}
+          openedToolBoxCategories={openedToolBoxCategories}
+          setOpenedToolBoxCategories={setOpenedToolBoxCategories}
+        />
+        )}
         <ConsoleModal
           show={showConsole}
           connectionOpen={connectionOpen}
           setConnectionOpen={setConnectionOpen}
-        ></ConsoleModal>
+        />
         <PlotterModal
           show={showPlotter}
           connectionOpen={connectionOpen}
@@ -450,13 +455,13 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
       </div>
 
       {/* This xml is for the blocks' menu we will provide. Here are examples on how to include categories and subcategories */}
-      <xml id='toolbox' is='Blockly workspace'>
+      <xml id="toolbox" is="Blockly workspace">
         {
           // Maps out block categories
-          activity &&
-            activity.toolbox &&
-            activity.toolbox.map(([category, blocks]) => (
-              <category name={category} is='Blockly category' key={category}>
+          activity
+            && activity.toolbox
+            && activity.toolbox.map(([category, blocks]) => (
+              <category name={category} is="Blockly category" key={category}>
                 {
                   // maps out blocks in category
                   // eslint-disable-next-line
@@ -464,7 +469,7 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
                     return (
                       <block
                         type={block.name}
-                        is='Blockly block'
+                        is="Blockly block"
                         key={block.name}
                       />
                     );
@@ -478,10 +483,10 @@ export default function MentorCanvas({ activity, isSandbox, setActivity,  isMent
       {compileError && (
         <Alert
           message={compileError}
-          type='error'
+          type="error"
           closable
           onClose={(e) => setCompileError('')}
-        ></Alert>
+        />
       )}
     </div>
   );

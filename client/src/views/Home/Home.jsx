@@ -1,17 +1,15 @@
 import React from 'react';
-import Logo from "../../assets/casmm_logo.png";
-import NavBar from "../../components/NavBar/NavBar";
+import Logo from '../../assets/casmm_logo.png';
 import './Home.less';
-import HomeJoin from "./HomeJoin";
+import HomeJoin from './HomeJoin';
 
-const Home = () => (
-    <div className='container nav-padding'>
-        <NavBar />
-        <div id='join-wrapper'>
-            <img src={Logo} id='casmm-logo' alt='logo'/>
-            <HomeJoin />
-        </div>
+function Home() {
+  return (
+    <div id="join-wrapper">
+      <img src={Logo} id="casmm-logo" alt="logo" />
+      <HomeJoin />
     </div>
-)
+  );
+}
 
 export default Home;

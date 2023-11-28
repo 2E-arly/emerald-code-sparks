@@ -5,7 +5,7 @@ import { getToken } from './AuthRequests';
 // creates private route handler
 function PrivateRoute({ children }) {
   const token = getToken();
-  return token ? children : <Navigate to='/' />;
+  return token ? children : <Navigate to="/" />;
 }
 
 export default PrivateRoute;

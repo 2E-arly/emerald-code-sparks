@@ -1,4 +1,6 @@
-import { Button, Checkbox, Select, Input, message, Row, Col } from 'antd';
+import {
+  Button, Checkbox, Select, Input, message, Row, Col,
+} from 'antd';
 import React, { useState, useEffect } from 'react';
 import {
   writeToPort,
@@ -74,7 +76,7 @@ export default function ConsoleModal({
   };
 
   return (
-    <div id='console-container' className={show ? 'open' : ''}>
+    <div id="console-container" className={show ? 'open' : ''}>
       <div style={{ margin: '5px 0' }}>
         <strong style={{ fontSize: '10' }}>Baud Rate: </strong>
         <Select
@@ -98,7 +100,7 @@ export default function ConsoleModal({
           <Select.Option value={115200}>115200</Select.Option>
         </Select>
         <Button
-          id='connect-button'
+          id="connect-button"
           onClick={() => handleConnect()}
           style={{ marginLeft: '10px' }}
         >
@@ -115,22 +117,22 @@ export default function ConsoleModal({
           New Line
         </Checkbox>
       </div>
-      <div id='content-container'>
-        <p id='console-content'>Waiting for input...</p>
+      <div id="content-container">
+        <p id="console-content">Waiting for input...</p>
       </div>
       <Row>
         <Col span={10}>
           <Input
-            type='text'
+            type="text"
             value={input}
-            placeholder='Enter your input: '
-            id='console-message'
-            autoComplete='off'
+            placeholder="Enter your input: "
+            id="console-message"
+            autoComplete="off"
             onKeyPress={handleKeyPress}
             onChange={(e) => {
               setInput(e.target.value);
             }}
-          ></Input>
+          />
         </Col>
         <Col span={2}>
           <Button
@@ -142,22 +144,22 @@ export default function ConsoleModal({
         </Col>
         <Col span={6}>
           {deviceDisconnect ? (
-            <Message message='Device disconnected'></Message>
+            <Message message="Device disconnected" />
           ) : (
-            <Message message='Device Connected' type='success'></Message>
+            <Message message="Device Connected" type="success" />
           )}
         </Col>
         <Col span={6}>
           {connectionOpen ? (
             <Message
-              message='Serial Monitor Connection Opened'
-              type='success'
-            ></Message>
+              message="Serial Monitor Connection Opened"
+              type="success"
+            />
           ) : (
             <Message
-              message='Serial Monitor Connection Not Opened'
-              type='info'
-            ></Message>
+              message="Serial Monitor Connection Not Opened"
+              type="info"
+            />
           )}
         </Col>
       </Row>

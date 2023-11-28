@@ -1,11 +1,13 @@
-import { Button, Form, Input, message, Modal } from "antd"
-import React, { useEffect, useState } from "react"
-import { useSearchParams } from "react-router-dom"
+import {
+  Button, Form, Input, message, Modal,
+} from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   getLessonModule,
   updateLessonModule,
-} from "../../../Utils/requests"
-import ActivityEditor from "../ActivityEditor/ActivityEditor"
+} from '../../../Utils/requests';
+import ActivityEditor from '../ActivityEditor/ActivityEditor';
 
 export default function LessonEditor({
   learningStandard,
@@ -14,41 +16,41 @@ export default function LessonEditor({
   tab,
   page,
 }) {
-  const [visible, setVisible] = useState(false)
-  const [name, setName] = useState(learningStandard.name)
-  const [description, setDescription] = useState("")
-  const [standards, setStandards] = useState("")
-  const [link, setLink] = useState("")
-  const [linkError, setLinkError] = useState(false)
-  const [displayName, setDisplayName] = useState(learningStandard.name)
+  const [visible, setVisible] = useState(false);
+  const [name, setName] = useState(learningStandard.name);
+  const [description, setDescription] = useState('');
+  const [standards, setStandards] = useState('');
+  const [link, setLink] = useState('');
+  const [linkError, setLinkError] = useState(false);
+  const [displayName, setDisplayName] = useState(learningStandard.name);
   // eslint-disable-next-line
   const [_, setSearchParams] = useSearchParams()
 
   const showModal = async () => {
-    setVisible(true)
-    const res = await getLessonModule(learningStandard.id)
-    setName(res.data.name)
-    setDescription(res.data.expectations)
-    setStandards(res.data.standards)
-    setLink(res.data.link)
-    setLinkError(false)
-  }
+    setVisible(true);
+    const res = await getLessonModule(learningStandard.id);
+    setName(res.data.name);
+    setDescription(res.data.expectations);
+    setStandards(res.data.standards);
+    setLink(res.data.link);
+    setLinkError(false);
+  };
 
   useEffect(() => {
-    setDisplayName(learningStandard.name)
-  }, [learningStandard.name])
+    setDisplayName(learningStandard.name);
+  }, [learningStandard.name]);
 
   const handleCancel = () => {
-    setVisible(false)
-  }
+    setVisible(false);
+  };
 
   const handleSubmit = async () => {
     if (link) {
-      const goodLink = checkURL(link)
+      const goodLink = checkURL(link);
       if (!goodLink) {
-        setLinkError(true)
-        message.error("Please Enter a valid URL starting with HTTP/HTTPS", 4)
-        return
+        setLinkError(true);
+        message.error('Please Enter a valid URL starting with HTTP/HTTPS', 4);
+        return;
       }
     }
     const response = await updateLessonModule(
@@ -56,27 +58,26 @@ export default function LessonEditor({
       name,
       description,
       standards,
-      link
-    )
+      link,
+    );
     if (response.err) {
-      message.error("Fail to update lesson")
+      message.error('Fail to update lesson');
     } else {
-      message.success("Update lesson success")
-      setDisplayName(name)
-      setSearchParams({ tab, page, activity: response.data.id })
-      setViewing(response.data.id)
-      setVisible(false)
+      message.success('Update lesson success');
+      setDisplayName(name);
+      setSearchParams({ tab, page, activity: response.data.id });
+      setViewing(response.data.id);
+      setVisible(false);
     }
-  }
+  };
 
-  const checkURL = n => {
-    const regex =
-      /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g
+  const checkURL = (n) => {
+    const regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
     if (n.search(regex) === -1) {
-      return null
+      return null;
     }
-    return n
-  }
+    return n;
+  };
 
   return (
     <div>
@@ -104,7 +105,7 @@ export default function LessonEditor({
         >
           <Form.Item id="form-label" label="Lesson Name">
             <Input
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               value={name}
               required
               placeholder="Enter lesson name"
@@ -112,7 +113,7 @@ export default function LessonEditor({
           </Form.Item>
           <Form.Item id="form-label" label="Description">
             <Input.TextArea
-              onChange={e => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
               value={description}
               rows={3}
               required
@@ -121,7 +122,7 @@ export default function LessonEditor({
           </Form.Item>
           <Form.Item id="form-label" label="Standards">
             <Input
-              onChange={e => setStandards(e.target.value)}
+              onChange={(e) => setStandards(e.target.value)}
               value={standards}
               required
               placeholder="Enter lesson standards"
@@ -129,11 +130,11 @@ export default function LessonEditor({
           </Form.Item>
           <Form.Item label="Link to Additional Resources (Optional)">
             <Input
-              onChange={e => {
-                setLink(e.target.value)
-                setLinkError(false)
+              onChange={(e) => {
+                setLink(e.target.value);
+                setLinkError(false);
               }}
-              style={linkError ? { backgroundColor: "#FFCCCC" } : {}}
+              style={linkError ? { backgroundColor: '#FFCCCC' } : {}}
               value={link}
               placeholder="Enter a link"
             />
@@ -143,7 +144,7 @@ export default function LessonEditor({
               offset: 8,
               span: 16,
             }}
-            style={{ marginBottom: "0px" }}
+            style={{ marginBottom: '0px' }}
           >
             <Button
               type="primary"
@@ -173,5 +174,5 @@ export default function LessonEditor({
         />
       ) : null}
     </div>
-  )
+  );
 }

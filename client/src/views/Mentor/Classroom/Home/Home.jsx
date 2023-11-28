@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Home.less';
+import { message, Tag } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import {
   getClassroom,
   getLessonModule,
@@ -9,15 +11,13 @@ import MentorSubHeader from '../../../../components/MentorSubHeader/MentorSubHea
 import DisplayCodeModal from './DisplayCodeModal';
 import MentorActivityDetailModal from './MentorActivityDetailModal';
 import LessonModuleModal from './LessonModuleSelect/LessonModuleModal';
-import { message, Tag } from 'antd';
-import { useNavigate } from 'react-router-dom';
 
 export default function Home({ classroomId, viewing }) {
   const [classroom, setClassroom] = useState({});
   const [activities, setActivities] = useState([]);
   const [gradeId, setGradeId] = useState(null);
   const [activeLessonModule, setActiveLessonModule] = useState(null);
-  const [activityDetailsVisible, setActivityDetailsVisible] = useState(false)
+  const [activityDetailsVisible, setActivityDetailsVisible] = useState(false);
   const navigate = useNavigate();
 
   const SCIENCE = 1;
@@ -34,7 +34,7 @@ export default function Home({ classroomId, viewing }) {
         classroom.selections.forEach(async (selection) => {
           if (selection.current) {
             const lsRes = await getLessonModule(
-              selection.lesson_module
+              selection.lesson_module,
             );
             if (lsRes.data) setActiveLessonModule(lsRes.data);
             else {
@@ -89,16 +89,16 @@ export default function Home({ classroomId, viewing }) {
 
   return (
     <div>
-      <button id='home-back-btn' onClick={handleBack}>
-        <i className='fa fa-arrow-left' aria-hidden='true' />
+      <button id="home-back-btn" onClick={handleBack}>
+        <i className="fa fa-arrow-left" aria-hidden="true" />
       </button>
       <DisplayCodeModal code={classroom.code} />
-      <MentorSubHeader title={classroom.name}></MentorSubHeader>
-      <div id='home-content-container'>
-        <div id='active-lesson-module'>
+      <MentorSubHeader title={classroom.name} />
+      <div id="home-content-container">
+        <div id="active-lesson-module">
           {activeLessonModule ? (
             <div>
-              <div id='active-lesson-module-title-container'>
+              <div id="active-lesson-module-title-container">
                 <h3>{`Learning Standard - ${activeLessonModule.name}`}</h3>
                 <LessonModuleModal
                   setActiveLessonModule={setActiveLessonModule}
@@ -108,47 +108,46 @@ export default function Home({ classroomId, viewing }) {
                   setActivities={setActivities}
                 />
               </div>
-              <p id='lesson-module-expectations'>{`Expectations: ${activeLessonModule.expectations}`}</p>
-             {activeLessonModule.link ? (
+              <p id="lesson-module-expectations">{`Expectations: ${activeLessonModule.expectations}`}</p>
+              {activeLessonModule.link ? (
                 <p>
-                  Addtional resources to the lesson:{' '}
+                  Addtional resources to the lesson:
+                  {' '}
                   <a
                     href={activeLessonModule.link}
-                    target='_blank'
-                    rel='noreferrer'
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     {activeLessonModule.link}
                   </a>
                 </p>
               ) : null}
               {activities ? (
-                <div id='card-btn-container' className='flex space-between'>
+                <div id="card-btn-container" className="flex space-between">
                   {activities.map((activity) => (
                     <div id="view-activity-card" key={activity.id}>
-                      <div id='activity-title'>
-                       Activity Level {activity.number}
-                       </div>
-                      <div id='view-activity-heading' style={{display: "flex"}}>
-                        
+                      <div id="activity-title">
+                        Activity Level
+                        {' '}
+                        {activity.number}
+                      </div>
+                      <div id="view-activity-heading" style={{ display: 'flex' }}>
+
                         <button
-                          id='view-activity-button'
-                          style={{marginRight: "auto"}}
-                          onClick={() =>
-                            handleViewActivity(activity, activeLessonModule.name)
-                          }
+                          id="view-activity-button"
+                          style={{ marginRight: 'auto' }}
+                          onClick={() => handleViewActivity(activity, activeLessonModule.name)}
                         >
                           Student Template
                         </button>
                         {activity.activity_template && (
                           <button
-                            id='view-activity-button'
-                            style={{marginRight: "auto"}}
-                            onClick={() =>
-                              openActivityInWorkspace(
-                                activity,
-                                activeLessonModule.name
-                              )
-                            }
+                            id="view-activity-button"
+                            style={{ marginRight: 'auto' }}
+                            onClick={() => openActivityInWorkspace(
+                              activity,
+                              activeLessonModule.name,
+                            )}
                           >
                             Demo Template
                           </button>
@@ -162,7 +161,7 @@ export default function Home({ classroomId, viewing }) {
                           viewing={false}
                         />
                       </div>
-                      <div id='view-activity-info'>
+                      <div id="view-activity-info">
                         <p>
                           <strong>STANDARDS: </strong>
                           {activity.StandardS}
@@ -175,61 +174,52 @@ export default function Home({ classroomId, viewing }) {
                           <strong>Classroom Materials: </strong>
                           {activity.learning_components
                             .filter(
-                              (component) =>
-                                component.learning_component_type === SCIENCE
+                              (component) => component.learning_component_type === SCIENCE,
                             )
-                            .map((element, index) => {
-                              return (
-                                <Tag
-                                  key={index}
-                                  color={color[(index + 1) % 11]}
-                                >
-                                  {element.type}
-                                </Tag>
-                              );
-                            })}
+                            .map((element, index) => (
+                              <Tag
+                                key={index}
+                                color={color[(index + 1) % 11]}
+                              >
+                                {element.type}
+                              </Tag>
+                            ))}
                         </p>
                         <p>
                           <strong>Student Materials: </strong>
                           {activity.learning_components
                             .filter(
-                              (component) =>
-                                component.learning_component_type === MAKING
+                              (component) => component.learning_component_type === MAKING,
                             )
-                            .map((element, index) => {
-                              return (
-                                <Tag
-                                  key={index}
-                                  color={color[(index + 4) % 11]}
-                                >
-                                  {element.type}
-                                </Tag>
-                              );
-                            })}
+                            .map((element, index) => (
+                              <Tag
+                                key={index}
+                                color={color[(index + 4) % 11]}
+                              >
+                                {element.type}
+                              </Tag>
+                            ))}
                         </p>
                         <p>
                           <strong>Arduino Components: </strong>
                           {activity.learning_components
                             .filter(
-                              (component) =>
-                                component.learning_component_type ===
-                                COMPUTATION
+                              (component) => component.learning_component_type
+                                === COMPUTATION,
                             )
-                            .map((element, index) => {
-                              return (
-                                <Tag
-                                  key={index}
-                                  color={color[(index + 7) % 11]}
-                                >
-                                  {element.type}
-                                </Tag>
-                              );
-                            })}
+                            .map((element, index) => (
+                              <Tag
+                                key={index}
+                                color={color[(index + 7) % 11]}
+                              >
+                                {element.type}
+                              </Tag>
+                            ))}
                         </p>
                         {activity.link ? (
                           <p>
                             <strong>Link to Additional Information: </strong>
-                            <a href={activity.link} target='_blank' rel='noreferrer'>
+                            <a href={activity.link} target="_blank" rel="noreferrer">
                               {activity.link}
                             </a>
                           </p>

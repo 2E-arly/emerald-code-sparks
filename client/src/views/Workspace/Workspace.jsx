@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { getActivityToolbox } from '../../Utils/requests.js';
 import BlocklyCanvasPanel from '../../components/ActivityPanels/BlocklyCanvasPanel/BlocklyCanvasPanel';
-import { message } from 'antd';
 import NavBar from '../../components/NavBar/NavBar';
-import { useNavigate } from 'react-router-dom';
 
 export default function Workspace({ handleLogout }) {
   const [activity, setActivity] = useState({});
@@ -18,7 +18,7 @@ export default function Workspace({ handleLogout }) {
       } else {
         getActivityToolbox(localActivity.id).then((res) => {
           if (res.data) {
-            let loadedActivity = { ...localActivity, toolbox: res.data.toolbox };
+            const loadedActivity = { ...localActivity, toolbox: res.data.toolbox };
 
             localStorage.setItem('my-activity', JSON.stringify(loadedActivity));
             setActivity(loadedActivity);
@@ -37,14 +37,14 @@ export default function Workspace({ handleLogout }) {
   };
 
   return (
-    <div className='container flex flex-row nav-padding'>
-      <NavBar isStudent={true} />
+    <div className="container flex flex-row nav-padding">
+      <NavBar isStudent />
       <BlocklyCanvasPanel
         activity={activity}
         lessonName={`${activity.lesson_module_name}, Activity ${activity.number}`}
         handleGoBack={handleGoBack}
         handleLogout={handleLogout}
-        isStudent={true}
+        isStudent
       />
     </div>
   );

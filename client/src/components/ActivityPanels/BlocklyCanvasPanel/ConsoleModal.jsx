@@ -1,4 +1,6 @@
-import { Button, Checkbox, Select, Input, message, Row, Col } from 'antd';
+import {
+  Button, Checkbox, Select, Input, message, Row, Col,
+} from 'antd';
 import React, { useState, useEffect } from 'react';
 import {
   writeToPort,
@@ -69,31 +71,31 @@ export default function ConsoleModal({
   };
 
   return (
-    <div id='console-container' className={show ? 'open' : ''}>
+    <div id="console-container" className={show ? 'open' : ''}>
       <div style={{ margin: '5px 0' }}>
         <strong style={{ fontSize: '10' }}>Baud Rate: </strong>
         <Select
-          defaultValue='9600'
+          defaultValue="9600"
           onChange={handleChange}
           className={{ width: '15rem' }}
           disabled={connectionOpen}
         >
-          <Select.Option value='300'>300</Select.Option>
-          <Select.Option value='600'>600</Select.Option>
-          <Select.Option value='1200'>1200</Select.Option>
-          <Select.Option value='2400'>2400</Select.Option>
-          <Select.Option value='4800'>4800</Select.Option>
-          <Select.Option value='9600'>9600</Select.Option>
-          <Select.Option value='14400'>14400</Select.Option>
-          <Select.Option value='19200'>19200</Select.Option>
-          <Select.Option value='28800'>28800</Select.Option>
-          <Select.Option value='31250'>31250</Select.Option>
-          <Select.Option value='38400'>38400</Select.Option>
-          <Select.Option value='57600'>57600</Select.Option>
-          <Select.Option value='115200'>115200</Select.Option>
+          <Select.Option value="300">300</Select.Option>
+          <Select.Option value="600">600</Select.Option>
+          <Select.Option value="1200">1200</Select.Option>
+          <Select.Option value="2400">2400</Select.Option>
+          <Select.Option value="4800">4800</Select.Option>
+          <Select.Option value="9600">9600</Select.Option>
+          <Select.Option value="14400">14400</Select.Option>
+          <Select.Option value="19200">19200</Select.Option>
+          <Select.Option value="28800">28800</Select.Option>
+          <Select.Option value="31250">31250</Select.Option>
+          <Select.Option value="38400">38400</Select.Option>
+          <Select.Option value="57600">57600</Select.Option>
+          <Select.Option value="115200">115200</Select.Option>
         </Select>
         <Button
-          id='connect-button'
+          id="connect-button"
           onClick={() => handleConnect()}
           style={{ marginLeft: '10px' }}
         >
@@ -110,22 +112,22 @@ export default function ConsoleModal({
           New Line
         </Checkbox>
       </div>
-      <div id='content-container'>
-        <p id='console-content'>Waiting for input...</p>
+      <div id="content-container">
+        <p id="console-content">Waiting for input...</p>
       </div>
       <Row>
         <Col span={10}>
           <Input
-            type='text'
+            type="text"
             value={input}
-            placeholder='Enter your input: '
-            id='console-message'
-            autoComplete='off'
+            placeholder="Enter your input: "
+            id="console-message"
+            autoComplete="off"
             onKeyPress={handleKeyPress}
             onChange={(e) => {
               setInput(e.target.value);
             }}
-          ></Input>
+          />
         </Col>
         <Col span={2}>
           <Button
@@ -137,22 +139,22 @@ export default function ConsoleModal({
         </Col>
         <Col span={6}>
           {deviceDisconnect ? (
-            <Message message='Device disconnected'></Message>
+            <Message message="Device disconnected" />
           ) : (
-            <Message message='Device Connected' type='success'></Message>
+            <Message message="Device Connected" type="success" />
           )}
         </Col>
         <Col span={6}>
           {connectionOpen ? (
             <Message
-              message='Serial Monitor Connection Opened'
-              type='success'
-            ></Message>
+              message="Serial Monitor Connection Opened"
+              type="success"
+            />
           ) : (
             <Message
-              message='Serial Monitor Connection Not Opened'
-              type='info'
-            ></Message>
+              message="Serial Monitor Connection Not Opened"
+              type="info"
+            />
           )}
         </Col>
       </Row>

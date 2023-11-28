@@ -1,7 +1,6 @@
+import axios from 'axios';
 import { server } from './hosts';
 import { setUserState, getCurrUser } from './userState';
-
-import axios from 'axios';
 
 // return user token from strapi
 export const postUser = async (body) => {

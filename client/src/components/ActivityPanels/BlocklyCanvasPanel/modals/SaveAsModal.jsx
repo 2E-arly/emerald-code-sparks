@@ -1,6 +1,8 @@
-import { Modal, Button, Input, Form, message, Menu } from 'antd';
-import { handleSaveAsWorkspace } from '../../Utils/helpers';
+import {
+  Modal, Button, Input, Form, message, Menu,
+} from 'antd';
 import React, { useState } from 'react';
+import { handleSaveAsWorkspace } from '../../Utils/helpers';
 import { getAuthorizedWorkspaceToolbox } from '../../../../Utils/requests';
 import { useGlobalState } from '../../../../Utils/userState';
 
@@ -34,7 +36,7 @@ export default function SaveAsModal({
       description,
       workspaceRef,
       studentToolbox,
-      classroomId
+      classroomId,
     );
     if (res.err) {
       message.error(res.err);
@@ -65,21 +67,21 @@ export default function SaveAsModal({
 
   return (
     <div>
-      <Menu.Item id='menu-save' onClick={showModal}>
-        <i className='fa fa-save'></i>
-        <i id='pencil-icon' className='fas fa-pencil-alt'></i>
+      <Menu.Item id="menu-save" onClick={showModal}>
+        <i className="fa fa-save" />
+        <i id="pencil-icon" className="fas fa-pencil-alt" />
         &nbsp;Save As
       </Menu.Item>
       <Modal
-        title='Save As'
+        title="Save As"
         visible={visible}
         onCancel={handleCancel}
-        width='25vw'
+        width="25vw"
         footer={null}
       >
         <Form
-          layout='horizontal'
-          size='default'
+          layout="horizontal"
+          size="default"
           labelCol={{
             span: 7,
           }}
@@ -88,23 +90,23 @@ export default function SaveAsModal({
           }}
           onFinish={handleSaveAs}
         >
-          <Form.Item label='Workspace Name: '>
+          <Form.Item label="Workspace Name: ">
             <Input
               onChange={(e) => setName(e.target.value)}
               value={name}
-              type='text'
-              placeholder='Enter workspace name'
+              type="text"
+              placeholder="Enter workspace name"
               required
-            ></Input>
+            />
           </Form.Item>
-          <Form.Item label='Description: '>
+          <Form.Item label="Description: ">
             <Input.TextArea
               onChange={(e) => setDescription(e.target.value)}
               value={description}
-              type='text'
-              placeholder='Enter description'
+              type="text"
+              placeholder="Enter description"
               required
-            ></Input.TextArea>
+            />
           </Form.Item>
           <Form.Item
             wrapperCol={{
@@ -114,13 +116,13 @@ export default function SaveAsModal({
             style={{ marginBottom: '0px' }}
           >
             <Button
-              type='primary'
-              htmlType='submit'
-              className='content-creator-button'
+              type="primary"
+              htmlType="submit"
+              className="content-creator-button"
             >
               Submit
             </Button>
-            <Button onClick={handleCancel} className='content-creator-button'>
+            <Button onClick={handleCancel} className="content-creator-button">
               Cancel
             </Button>
           </Form.Item>

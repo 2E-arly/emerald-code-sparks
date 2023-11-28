@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-import { Tabs, Table, Popconfirm, message } from 'antd';
-import Navbar from '../../components/NavBar/NavBar';
+import {
+  Tabs, Table, Popconfirm, message,
+} from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
+import { useSearchParams } from 'react-router-dom';
 import SavedWorkSpaceTab from '../../components/Tabs/SavedWorkspaceTab';
 import UnitCreator from './UnitCreator/UnitCreator';
 import LessonModuleActivityCreator from './LessonModuleCreator/LessonModuleCreator';
@@ -13,7 +15,6 @@ import {
 } from '../../Utils/requests';
 import UnitEditor from './UnitEditor/UnitEditor';
 import LessonEditor from './LessonEditor/LessonEditor';
-import { useSearchParams } from 'react-router-dom';
 
 import './ContentCreator.less';
 
@@ -25,10 +26,10 @@ export default function ContentCreator() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [tab, setTab] = useState(
-    searchParams.has('tab') ? searchParams.get('tab') : 'home'
+    searchParams.has('tab') ? searchParams.get('tab') : 'home',
   );
   const [page, setPage] = useState(
-    searchParams.has('page') ? parseInt(searchParams.get('page')) : 1
+    searchParams.has('page') ? parseInt(searchParams.get('page')) : 1,
   );
   const [viewing, setViewing] = useState(parseInt(searchParams.get('activity')));
 
@@ -43,7 +44,6 @@ export default function ContentCreator() {
       const grades = gradeResponse.data;
       grades.sort((a, b) => (a.id > b.id ? 1 : -1));
       setGradeList(grades);
-
     };
     fetchData();
   }, []);
@@ -57,7 +57,7 @@ export default function ContentCreator() {
       width: '22.5%',
       align: 'left',
       render: (_, key) => (
-        <UnitEditor id={key.unit.id} unitName={key.unit.name} linkBtn={true} />
+        <UnitEditor id={key.unit.id} unitName={key.unit.name} linkBtn />
       ),
     },
     {
@@ -70,7 +70,7 @@ export default function ContentCreator() {
       render: (_, key) => (
         <LessonEditor
           learningStandard={key}
-          linkBtn={true}
+          linkBtn
           viewing={viewing}
           setViewing={setViewing}
           tab={tab}
@@ -94,7 +94,7 @@ export default function ContentCreator() {
       align: 'right',
       render: (_, key) => (
         <Popconfirm
-          title={'Are you sure you want to delete this learning standard?'}
+          title="Are you sure you want to delete this learning standard?"
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           onConfirm={async () => {
             const res = await deleteLessonModule(key.id);
@@ -102,59 +102,49 @@ export default function ContentCreator() {
               message.error(res.err);
             } else {
               setLessonModuleList(
-                learningStandardList.filter((ls) => {
-                  return ls.id !== key.id;
-                })
+                learningStandardList.filter((ls) => ls.id !== key.id),
               );
               message.success('Delete success');
             }
           }}
         >
-          <button id={'link-btn'}>Delete</button>
+          <button id="link-btn">Delete</button>
         </Popconfirm>
       ),
     },
   ];
 
-  const filterLS = (grade) => {
-    return learningStandardList.filter((learningStandard) => {
-      return learningStandard.unit.grade === grade.id;
-    });
-  };
+  const filterLS = (grade) => learningStandardList.filter((learningStandard) => learningStandard.unit.grade === grade.id);
 
-  const setTabs = (grade) => {
-    return (
-      <TabPane tab={grade.name} key={grade.name}>
-        <div id='page-header'>
-          <h1>Lessons & Units</h1>
+  const setTabs = (grade) => (
+    <TabPane tab={grade.name} key={grade.name}>
+      <div id="page-header">
+        <h1>Lessons & Units</h1>
+      </div>
+      <div id="content-creator-table-container">
+        <div id="content-creator-btn-container">
+          <UnitCreator gradeList={gradeList} />
+          <LessonModuleActivityCreator />
         </div>
-        <div id='content-creator-table-container'>
-          <div id='content-creator-btn-container'>
-            <UnitCreator gradeList={gradeList} />
-            <LessonModuleActivityCreator />
-          </div>
-          <Table
-            columns={columns}
-            dataSource={filterLS(grade)}
-            rowClassName='editable-row'
-            rowKey='id'
-            onChange={(Pagination) => {
-              setViewing(undefined);
-              setPage(Pagination.current);
-              setSearchParams({ tab, page: Pagination.current });
-            }}
-            pagination={{ current: page ? page : 1 }}
-          ></Table>
-        </div>
-      </TabPane>
-    );
-  };
+        <Table
+          columns={columns}
+          dataSource={filterLS(grade)}
+          rowClassName="editable-row"
+          rowKey="id"
+          onChange={(Pagination) => {
+            setViewing(undefined);
+            setPage(Pagination.current);
+            setSearchParams({ tab, page: Pagination.current });
+          }}
+          pagination={{ current: page || 1 }}
+        />
+      </div>
+    </TabPane>
+  );
 
   return (
-    <div className='container nav-padding'>
-      <Navbar />
-      <div id='main-header'>Welcome Content Creator</div>
-
+    <>
+      <div id="main-header">Welcome Content Creator</div>
       <Tabs
         onChange={(activeKey) => {
           setTab(activeKey);
@@ -162,14 +152,14 @@ export default function ContentCreator() {
           setViewing(undefined);
           setSearchParams({ tab: activeKey });
         }}
-        activeKey={tab ? tab : 'home'}
+        activeKey={tab || 'home'}
       >
-        <TabPane tab='Home' key='home'>
-          <div id='page-header'>
+        <TabPane tab="Home" key="home">
+          <div id="page-header">
             <h1>Lessons & Units</h1>
           </div>
-          <div id='content-creator-table-container'>
-            <div id='content-creator-btn-container'>
+          <div id="content-creator-table-container">
+            <div id="content-creator-btn-container">
               <UnitCreator gradeList={gradeList} />
               <LessonModuleActivityCreator
                 setLessonModuleList={setLessonModuleList}
@@ -182,29 +172,27 @@ export default function ContentCreator() {
             <Table
               columns={columns}
               dataSource={learningStandardList}
-              rowClassName='editable-row'
-              rowKey='id'
+              rowClassName="editable-row"
+              rowKey="id"
               onChange={(Pagination) => {
                 setViewing(undefined);
                 setPage(Pagination.current);
                 setSearchParams({ tab, page: Pagination.current });
               }}
-              pagination={{ current: page ? page : 1 }}
-            ></Table>
+              pagination={{ current: page || 1 }}
+            />
           </div>
         </TabPane>
 
-        {gradeList.map((grade) => {
-          return setTabs(grade);
-        })}
+        {gradeList.map((grade) => setTabs(grade))}
 
-        <TabPane tab='Saved Workspaces' key='workspace'>
+        <TabPane tab="Saved Workspaces" key="workspace">
           <SavedWorkSpaceTab
             searchParams={searchParams}
             setSearchParams={setSearchParams}
           />
         </TabPane>
       </Tabs>
-    </div>
+    </>
   );
 }

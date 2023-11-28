@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Input, Form, Space, Select} from 'antd';
+import {
+  Table, Button, Modal, Input, Form, Space, Select,
+} from 'antd';
 import './StudyLevelReport.less';
-import { useNavigate } from 'react-router-dom';
-import { sendEmail, getResearchers, getStudies, deleteStudy} from '../../Utils/requests';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import {
+  sendEmail, getResearchers, getStudies, deleteStudy,
+} from '../../Utils/requests';
 
-const StudyLevelReport = () => {
+function StudyLevelReport() {
   const [studies, setStudies] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -48,7 +51,6 @@ const StudyLevelReport = () => {
           console.error('Fail to retrieve studies');
         }
         setStudies(studiesRes.data);
-        
       },
     });
   };
@@ -56,23 +58,23 @@ const StudyLevelReport = () => {
   const handleAddResearcher = async () => {
     console.log('add researcher');
     form.validateFields().then((values) => {
-        console.log(values);
-        //sanitize input
-        values.first_name = values.first_name.replace(/[^a-zA-Z0-9]/g, '');
-        values.last_name = values.last_name.replace(/[^a-zA-Z0-9]/g, '');
-        values.email = values.email.replace(/[^a-zA-Z0-9@.]/g, '');
-        values.studyID = values.studyID.replace(/[^a-zA-Z0-9]/g, '');
-        setIsModalVisible(false);
-        const emailTemplate = {
-          name: values.first_name + ' ' + values.last_name,
-          email: values.email,
-          studyID: values.studyID,
-        }
-        //send email to admin
-        sendEmail(emailTemplate);
-        form.resetFields();
-  });
-}
+      console.log(values);
+      // sanitize input
+      values.first_name = values.first_name.replace(/[^a-zA-Z0-9]/g, '');
+      values.last_name = values.last_name.replace(/[^a-zA-Z0-9]/g, '');
+      values.email = values.email.replace(/[^a-zA-Z0-9@.]/g, '');
+      values.studyID = values.studyID.replace(/[^a-zA-Z0-9]/g, '');
+      setIsModalVisible(false);
+      const emailTemplate = {
+        name: `${values.first_name} ${values.last_name}`,
+        email: values.email,
+        studyID: values.studyID,
+      };
+      // send email to admin
+      sendEmail(emailTemplate);
+      form.resetFields();
+    });
+  };
   const columns = [
     {
       title: 'Study ID',
@@ -82,6 +84,17 @@ const StudyLevelReport = () => {
       align: 'left',
     },
     {
+      title: '🔍',
+      key: 'openStudy',
+      width: '4%',
+      align: 'center',
+      render: (text, record) => (
+        <button>
+          <Link to={`/researcher/studyLevel/:${record.studyID}`}>Details</Link>
+        </button>
+      ),
+    },
+    {
       title: 'Study Name',
       key: 'studyName',
       dataIndex: 'studyName',
@@ -89,12 +102,14 @@ const StudyLevelReport = () => {
       align: 'left',
     },
     {
-      title: "Study Tag",
-      key: "studyTag",
-      dataIndex: "studyTag",
-      width: "2%",
-      align: "left",
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      title: 'Study Tag',
+      key: 'studyTag',
+      dataIndex: 'studyTag',
+      width: '2%',
+      align: 'left',
+      filterDropdown: ({
+        setSelectedKeys, selectedKeys, confirm, clearFilters,
+      }) => (
         <div style={{ padding: 8 }}>
           <Select
             mode="multiple"
@@ -148,7 +163,9 @@ const StudyLevelReport = () => {
         <>
           {record.researchers.map((researcher) => (
             <div key={researcher.id}>
-              {researcher.first_name} {researcher.last_name}
+              {researcher.first_name}
+              {' '}
+              {researcher.last_name}
             </div>
           ))}
         </>
@@ -166,14 +183,16 @@ const StudyLevelReport = () => {
           ))}
         </>
       ),
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+      filterDropdown: ({
+        setSelectedKeys, selectedKeys, confirm, clearFilters,
+      }) => (
         <div style={{ padding: 8 }}>
           <Input
             placeholder="Search Classroom"
             value={selectedKeys[0]}
             onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
             onPressEnter={() => confirm()}
-            style={{ marginBottom: 8, display: "block" }}
+            style={{ marginBottom: 8, display: 'block' }}
           />
           <Space>
             <Button
@@ -213,70 +232,71 @@ const StudyLevelReport = () => {
       key: 'action',
       render: (_, record) => (
         <>
-        <Modal
-          title="Add Researcher"
-          visible={isModalVisible}
-          onOk={handleAddResearcher}
-          onCancel={handleCancel}>
-          <Form form={form} name="addResearcherForm">
-            <Form.Item
-              name="first_name"
-              label="Researcher First Name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter the researcher first name',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="last_name"
-              label="Researcher Last Name"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter the researcher last name',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                {
-                  type: 'email',
-                  message: 'Please enter a valid email address',
-                },
-                {
-                  required: true,
-                  message: 'Please enter the email address',
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="studyID"
-              label="Study ID"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter the study ID',
-                },
-              ]}
+          <Modal
+            title="Add Researcher"
+            visible={isModalVisible}
+            onOk={handleAddResearcher}
+            onCancel={handleCancel}
+          >
+            <Form form={form} name="addResearcherForm">
+              <Form.Item
+                name="first_name"
+                label="Researcher First Name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter the researcher first name',
+                  },
+                ]}
               >
                 <Input />
               </Form.Item>
-          </Form>
-        </Modal>
+              <Form.Item
+                name="last_name"
+                label="Researcher Last Name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter the researcher last name',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                  {
+                    type: 'email',
+                    message: 'Please enter a valid email address',
+                  },
+                  {
+                    required: true,
+                    message: 'Please enter the email address',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="studyID"
+                label="Study ID"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter the study ID',
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Form>
+          </Modal>
           <Button type="primary" onClick={showModal}>
             Add Researcher
           </Button>
-          
+
           <Button type="danger" onClick={() => handleDeleteStudy(record)}>
             Delete
           </Button>
@@ -287,27 +307,25 @@ const StudyLevelReport = () => {
   ];
 
   return (
-    <div className='container nav-padding'>
-      <div className='menu-bar'>
-        <div id='activity-level-report-header'>Study Level Report</div>
-        <Link to={'/createStudyPage'}>
-        <Button onClick={() => navigate('/createStudyPage')} style={{ backgroundColor: 'green', color: 'white' }}>
+    <div className="container nav-padding">
+      <div className="menu-bar">
+        <div id="activity-level-report-header">Study Level Report</div>
+        <Button onClick={() => navigate('/researcher/createStudyPage')} style={{ backgroundColor: 'green', color: 'white' }}>
           Create Study
         </Button>
-      </Link>
         <button
-          className='activity-level-return'
-          onClick={() => navigate('/report')}
+          className="activity-level-return"
+          onClick={() => navigate('/researcher/report')}
         >
           Return to Dashboard
         </button>
       </div>
 
-      <main id='activity-report-content-wrapper'>
+      <main id="activity-report-content-wrapper">
         <Table
           columns={columns}
           dataSource={studies}
-          rowKey='id'
+          rowKey="id"
           pagination={{
             showQuickJumper: true,
             showSizeChanger: true,
@@ -317,6 +335,6 @@ const StudyLevelReport = () => {
       </main>
     </div>
   );
-};
+}
 
 export default StudyLevelReport;
