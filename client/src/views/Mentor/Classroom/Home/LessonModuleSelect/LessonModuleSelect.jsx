@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import {Modal, Button} from 'antd';
-import { AutoComplete, Divider, message, Tag } from 'antd';
+import {
+  Modal, Button,
+  AutoComplete, Divider, message, Tag,
+} from 'antd';
 import './LessonModuleSelect.less';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   getLessonModule,
   getUnits,
   getLessonModuleActivities,
 } from '../../../../../Utils/requests';
 import CheckUnits from './CheckUnits';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function LessonModuleSelect({
   selected,
@@ -35,13 +37,11 @@ export default function LessonModuleSelect({
         const u = res.data;
         setUnits(u);
         setVisibleStandardsByUnit(u);
-        const options = u.map((unitData) => {
-          return {
-            id: unitData.id,
-            number: unitData.number,
-            name: unitData.name,
-          };
-        });
+        const options = u.map((unitData) => ({
+          id: unitData.id,
+          number: unitData.number,
+          name: unitData.name,
+        }));
         setPlainOptions(options);
         setCheckedList(options);
       } else {
@@ -66,7 +66,7 @@ export default function LessonModuleSelect({
   };
 
   const getFinishedWords = (word) => {
-    let words = [];
+    const words = [];
     units.forEach((unit) => {
       if (checkedList.find((checked) => checked.id === unit.id)) {
         unit.lesson_modules.forEach((ls) => {
@@ -80,18 +80,16 @@ export default function LessonModuleSelect({
   };
 
   const onSearch = (searchText) => {
-    let words = getFinishedWords(searchText);
+    const words = getFinishedWords(searchText);
     setSearchOptions(words);
-    let values = [];
+    const values = [];
     words.forEach((word) => {
       values.push(word.value);
     });
-    let visible = [];
+    const visible = [];
     units.forEach((unit) => {
-      let u = { ...unit };
-      u.lesson_modules = unit.lesson_modules.filter((ls) => {
-        return values.includes(ls.name);
-      });
+      const u = { ...unit };
+      u.lesson_modules = unit.lesson_modules.filter((ls) => values.includes(ls.name));
       if (u.lesson_modules.length > 0) {
         visible.push(u);
       }
@@ -102,9 +100,7 @@ export default function LessonModuleSelect({
   };
 
   const onSelect = (value) => {
-    let visible = units.filter((ls) => {
-      return ls.name === value;
-    });
+    const visible = units.filter((ls) => ls.name === value);
     visible.length > 0
       ? setVisibleStandardsByUnit(visible)
       : setVisibleStandardsByUnit(units);
@@ -140,21 +136,21 @@ export default function LessonModuleSelect({
   const COMPUTATION = 3;
 
   return (
-    <div className='overflow-hidden'>
+    <div className="overflow-hidden">
       <div
-        id='panel-1'
+        id="panel-1"
         className={activePanel === 'panel-1' ? 'panel-1 show' : 'panel-1 hide'}
       >
-        <div className='flex flex-column'>
-          <div id='search'>
+        <div className="flex flex-column">
+          <div id="search">
             <AutoComplete
               options={searchOptions}
-              placeholder='Search learning standards'
+              placeholder="Search learning standards"
               onSelect={onSelect}
               onSearch={onSearch}
             />
           </div>
-          <div id='check-units'>
+          <div id="check-units">
             <CheckUnits
               plainOptions={plainOptions}
               checkedList={checkedList}
@@ -162,141 +158,137 @@ export default function LessonModuleSelect({
             />
           </div>
         </div>
-        <div id='list-container'>
-          {visibleStandardsByUnit.map((unit) => {
-            return checkedList.find((checked) => checked.id === unit.id) ? (
-              <div key={unit.id}>
-                <Divider orientation='left'>{`Unit ${unit.number}- ${unit.name}`}</Divider>
-                {unit.lesson_modules.map((ls) => (
-                  <div
-                    key={ls.id}
-                    id={
+        <div id="list-container">
+          {visibleStandardsByUnit.map((unit) => (checkedList.find((checked) => checked.id === unit.id) ? (
+            <div key={unit.id}>
+              <Divider orientation="left">{`Unit ${unit.number}- ${unit.name}`}</Divider>
+              {unit.lesson_modules.map((ls) => (
+                <div
+                  key={ls.id}
+                  id={
                       selected.id !== ls.id
                         ? 'list-item-wrapper'
                         : 'selected-lesson-module'
                     }
-                    onClick={() => getSelectedLessonModule(ls)}
-                  >
-                    <li>{ls.name}</li>
-                  </div>
-                ))}
-              </div>
-            ) : null;
-          })}
+                  onClick={() => getSelectedLessonModule(ls)}
+                >
+                  <li>{ls.name}</li>
+                </div>
+              ))}
+            </div>
+          ) : null))}
         </div>
       </div>
       <div
-        id='panel-2'
+        id="panel-2"
         className={activePanel === 'panel-2' ? 'panel-2 show' : 'panel-2 hide'}
       >
-        <button id='back-btn' onClick={handleBack}>
-          <i className='fa fa-arrow-left' aria-hidden='true' />
+        <button id="back-btn" onClick={handleBack}>
+          <i className="fa fa-arrow-left" aria-hidden="true" />
         </button>
-        <div id='ls-info'>
-          <p id='lesson-module-expectations-title'>Description:</p>
-          <p id='lesson-module-expectations'>{selected.expectations}</p>
+        <div id="ls-info">
+          <p id="lesson-module-expectations-title">Description:</p>
+          <p id="lesson-module-expectations">{selected.expectations}</p>
           {selected.link ? (
             <p>
-              Link to addtional resources:{' '}
-              <a href={selected.link} target='_blank' rel='noreferrer'>
+              Link to addtional resources:
+              {' '}
+              <a href={selected.link} target="_blank" rel="noreferrer">
                 {selected.link}
               </a>
             </p>
           ) : null}
-          <div id='btn-container' className='flex space-between'>
+          <div id="btn-container" className="flex space-between">
             {activities
               ? activities.map((activity) => (
-                  // <button key={activity.id} onClick={() => handleViewActivity(activity)}>{`View Activity ${activity.number}`}</button>
-                  <div id='view-activity-button' key={activity.id}>
-                    <h3
-                      onClick={() => handleViewActivity(activity)}
-                      id='view-activity-title'
-                    >{`View Activity ${activity.number}`}</h3>
-                    <div id='view-activity-description'>
-                      <p
-                        className='view-activity-component-label'
-                        style={{ marginTop: '0px' }}
-                      >
-                        <strong>STANDARDS:</strong> {activity.StandardS}
-                      </p>
-                      <p className='view-activity-component-label'>
-                        <strong>Description:</strong> {activity.description}
-                      </p>
-                      <p className='view-activity-component-label'>
-                        <strong>Science Components: </strong>
-                      </p>
-                      <div>
-                        {activity.learning_components
-                          .filter(
-                            (component) =>
-                              component.learning_component_type === SCIENCE
-                          )
-                          .map((element, index) => {
-                            return (
-                              <Tag
-                                className='tag'
-                                key={index}
-                                color={color[(index + 1) % 11]}
-                              >
-                                {element.type}
-                              </Tag>
-                            );
-                          })}
-                      </div>
-                      <p className='view-activity-component-label'>
-                        <strong>Making Components: </strong>
-                      </p>
-                      <div>
-                        {activity.learning_components
-                          .filter(
-                            (component) =>
-                              component.learning_component_type === MAKING
-                          )
-                          .map((element, index) => {
-                            return (
-                              <Tag
-                                className='tag'
-                                key={index}
-                                color={color[(index + 4) % 11]}
-                              >
-                                {element.type}
-                              </Tag>
-                            );
-                          })}
-                      </div>
-                      <p className='view-activity-component-label'>
-                        <strong>Computation Components: </strong>
-                      </p>
-                      <div>
-                        {activity.learning_components
-                          .filter(
-                            (component) =>
-                              component.learning_component_type === COMPUTATION
-                          )
-                          .map((element, index) => {
-                            return (
-                              <Tag
-                                className='tag'
-                                key={index}
-                                color={color[(index + 7) % 11]}
-                              >
-                                {element.type}
-                              </Tag>
-                            );
-                          })}
-                      </div>
-                      {activity.link ? (
-                        <p className='view-activity-component-label'>
-                          <strong>Link to Additional Information: </strong>
-                          <a href={activity.link} target='_blank' rel='noreferrer'>
-                            {activity.link}
-                          </a>
-                        </p>
-                      ) : null}
-                      
+                // <button key={activity.id} onClick={() => handleViewActivity(activity)}>{`View Activity ${activity.number}`}</button>
+                <div id="view-activity-button" key={activity.id}>
+                  <h3
+                    onClick={() => handleViewActivity(activity)}
+                    id="view-activity-title"
+                  >
+                    {`View Activity ${activity.number}`}
+                  </h3>
+                  <div id="view-activity-description">
+                    <p
+                      className="view-activity-component-label"
+                      style={{ marginTop: '0px' }}
+                    >
+                      <strong>STANDARDS:</strong>
+                      {' '}
+                      {activity.StandardS}
+                    </p>
+                    <p className="view-activity-component-label">
+                      <strong>Description:</strong>
+                      {' '}
+                      {activity.description}
+                    </p>
+                    <p className="view-activity-component-label">
+                      <strong>Science Components: </strong>
+                    </p>
+                    <div>
+                      {activity.learning_components
+                        .filter(
+                          (component) => component.learning_component_type === SCIENCE,
+                        )
+                        .map((element, index) => (
+                          <Tag
+                            className="tag"
+                            key={index}
+                            color={color[(index + 1) % 11]}
+                          >
+                            {element.type}
+                          </Tag>
+                        ))}
                     </div>
+                    <p className="view-activity-component-label">
+                      <strong>Making Components: </strong>
+                    </p>
+                    <div>
+                      {activity.learning_components
+                        .filter(
+                          (component) => component.learning_component_type === MAKING,
+                        )
+                        .map((element, index) => (
+                          <Tag
+                            className="tag"
+                            key={index}
+                            color={color[(index + 4) % 11]}
+                          >
+                            {element.type}
+                          </Tag>
+                        ))}
+                    </div>
+                    <p className="view-activity-component-label">
+                      <strong>Computation Components: </strong>
+                    </p>
+                    <div>
+                      {activity.learning_components
+                        .filter(
+                          (component) => component.learning_component_type === COMPUTATION,
+                        )
+                        .map((element, index) => (
+                          <Tag
+                            className="tag"
+                            key={index}
+                            color={color[(index + 7) % 11]}
+                          >
+                            {element.type}
+                          </Tag>
+                        ))}
+                    </div>
+                    {activity.link ? (
+                      <p className="view-activity-component-label">
+                        <strong>Link to Additional Information: </strong>
+                        <a href={activity.link} target="_blank" rel="noreferrer">
+                          {activity.link}
+                        </a>
+                      </p>
+                    ) : null}
+
                   </div>
-                ))
+                </div>
+              ))
               : null}
           </div>
         </div>

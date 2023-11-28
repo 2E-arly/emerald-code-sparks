@@ -1,37 +1,39 @@
-import { Button, Form, Input, message, Modal } from "antd"
-import React, { useState } from "react"
-import { createUnit } from "../../../Utils/requests"
-import "./UnitCreator.less"
+import {
+  Button, Form, Input, message, Modal,
+} from 'antd';
+import React, { useState } from 'react';
+import { createUnit } from '../../../Utils/requests';
+import './UnitCreator.less';
 
 export default function UnitCreator({ gradeList }) {
-  const [visible, setVisible] = useState(false)
-  const [grade, setGrade] = useState("")
-  const [name, setName] = useState("")
-  const [number, setNumber] = useState("")
-  const [description, setDescription] = useState("")
-  const [standard, setStandard] = useState("")
+  const [visible, setVisible] = useState(false);
+  const [grade, setGrade] = useState('');
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const [description, setDescription] = useState('');
+  const [standard, setStandard] = useState('');
 
   const showModal = () => {
-    setNumber("")
-    setName("")
-    setDescription("")
-    setStandard("")
-    setVisible(true)
-  }
+    setNumber('');
+    setName('');
+    setDescription('');
+    setStandard('');
+    setVisible(true);
+  };
 
   const handleCancel = () => {
-    setVisible(false)
-  }
+    setVisible(false);
+  };
 
-  const handleSubmit = async e => {
-    const res = await createUnit(number, name, standard, description, grade)
+  const handleSubmit = async (e) => {
+    const res = await createUnit(number, name, standard, description, grade);
     if (res.err) {
-      message.error("Fail to create a new unit")
+      message.error('Fail to create a new unit');
     } else {
-      message.success("Successfully created unit")
-      setVisible(false)
+      message.success('Successfully created unit');
+      setVisible(false);
     }
-  }
+  };
 
   return (
     <div>
@@ -63,12 +65,12 @@ export default function UnitCreator({ gradeList }) {
               name="grade"
               defaultValue={grade}
               required
-              onChange={e => setGrade(e.target.value)}
+              onChange={(e) => setGrade(e.target.value)}
             >
               <option key={0} value={grade} disabled id="disabled-option">
                 Grade
               </option>
-              {gradeList.map(grade_ => (
+              {gradeList.map((grade_) => (
                 <option key={grade_.id} value={grade_.id}>
                   {grade_.name}
                 </option>
@@ -77,7 +79,7 @@ export default function UnitCreator({ gradeList }) {
           </Form.Item>
           <Form.Item id="form-label" label="Unit Name">
             <Input
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               value={name}
               placeholder="Enter unit name"
               required
@@ -85,7 +87,7 @@ export default function UnitCreator({ gradeList }) {
           </Form.Item>
           <Form.Item id="form-label" label="Unit Number">
             <Input
-              onChange={e => setNumber(e.target.value)}
+              onChange={(e) => setNumber(e.target.value)}
               type="number"
               value={number}
               placeholder="Enter unit number"
@@ -97,7 +99,7 @@ export default function UnitCreator({ gradeList }) {
           <Form.Item id="form-label" label="Description">
             <Input.TextArea
               rows={3}
-              onChange={e => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
               value={description}
               placeholder="Enter unit description"
               required
@@ -105,7 +107,7 @@ export default function UnitCreator({ gradeList }) {
           </Form.Item>
           <Form.Item id="form-label" label="Standards">
             <Input
-              onChange={e => setStandard(e.target.value)}
+              onChange={(e) => setStandard(e.target.value)}
               value={standard}
               placeholder="Enter unit Standards"
               required
@@ -116,7 +118,7 @@ export default function UnitCreator({ gradeList }) {
               offset: 8,
               span: 16,
             }}
-            style={{ marginBottom: "0px" }}
+            style={{ marginBottom: '0px' }}
           >
             <Button
               type="primary"
@@ -137,5 +139,5 @@ export default function UnitCreator({ gradeList }) {
         </Form>
       </Modal>
     </div>
-  )
+  );
 }

@@ -12,17 +12,17 @@ export const getCurrUser = () => {
     return {
       role: 'Student',
     };
-  } else if (result.role.type === 'content_creator') {
+  } if (result.role.type === 'content_creator') {
     return {
       role: 'ContentCreator',
       name: result.role.name,
     };
-  } else if (result.role.type === 'researcher') {
+  } if (result.role.type === 'researcher') {
     return {
       role: 'Researcher',
       name: result.role.name,
     };
-  } else if (result.role.type === 'authenticated') {
+  } if (result.role.type === 'authenticated') {
     return {
       role: 'Mentor',
       name: result.role.name,

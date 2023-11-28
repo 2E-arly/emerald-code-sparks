@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './StudentLogin.less';
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../../assets/casmm_logo.png';
 import { getStudents, postJoin } from '../../Utils/requests';
 import StudentLoginForm from './StudentLoginForm';
 import { setUserSession } from '../../Utils/AuthRequests';
-import { message } from 'antd';
-import { useNavigate } from 'react-router-dom';
 
 export default function StudentLogin() {
   const [studentList, setStudentList] = useState([]);
@@ -36,21 +36,21 @@ export default function StudentLogin() {
     students.forEach((student) => {
       tempAnimalArray.push(student.character);
     });
-    //remove duplicate
+    // remove duplicate
     tempAnimalArray = [...new Set(tempAnimalArray)];
-    //shuffle
+    // shuffle
     tempAnimalArray = tempAnimalArray.sort(() => Math.random() - 0.5);
     setAnimalList(tempAnimalArray);
   };
 
   const studentAuth = (ids) => {
-    let authList = [];
+    const authList = [];
     for (let i = 0; i < ids.length; i++) {
       for (let j = 0; j < studentList.length; j++) {
         if (ids[i] === studentList[j].id) authList.push(studentList[j]);
       }
     }
-    let fails = [...authFail];
+    const fails = [...authFail];
     // studentAnimals.forEach((animal) => console.log(animal));
     for (let i = 0; i < authList.length; i++) {
       if (authList[i].character !== studentAnimals[i]) {
@@ -65,7 +65,7 @@ export default function StudentLogin() {
   };
 
   const handleLogin = async () => {
-    let ids = studentIds.slice(0, numForms);
+    const ids = studentIds.slice(0, numForms);
     const fails = studentAuth(ids);
     if (!fails.includes(true)) {
       const res = await postJoin(joinCode, ids);
@@ -79,35 +79,35 @@ export default function StudentLogin() {
       setAttemp(attemp - 1);
       if (attemp <= 0) {
         message.error(
-          `Login Fails. Please contact your teacher to get your login information.`
+          'Login Fails. Please contact your teacher to get your login information.',
         );
       } else if (fails.includes(true)) {
         message.error(
-          `Student Name and Animal do not match. Remaining attemps (${attemp})`
+          `Student Name and Animal do not match. Remaining attemps (${attemp})`,
         );
       }
     }
   };
 
   const updateStudentUsers = (studentId, entryNum) => {
-    let ids = [...studentIds];
+    const ids = [...studentIds];
     ids[entryNum - 1] = parseInt(studentId);
     setStudentIds(ids);
   };
 
   const updateStudentAnimals = (studentAnimal, entryNum) => {
-    let animals = [...studentAnimals];
+    const animals = [...studentAnimals];
     animals[entryNum - 1] = studentAnimal;
     setStudentAnimals(animals);
   };
 
   const setForms = () => {
-    let forms = [];
+    const forms = [];
     for (let i = 0; i < numForms; i++) {
       forms.push(
         <span key={i}>
-          {i > 0 ? <div id='form-divider' /> : null}
-          <div id='wrapper'>
+          {i > 0 ? <div id="form-divider" /> : null}
+          <div id="wrapper">
             <StudentLoginForm
               entryNum={i + 1}
               updateStudentUsers={updateStudentUsers}
@@ -119,7 +119,7 @@ export default function StudentLogin() {
               studentIds={studentIds}
             />
           </div>
-        </span>
+        </span>,
       );
     }
     return forms;
@@ -135,10 +135,10 @@ export default function StudentLogin() {
   const removeStudent = () => {
     if (numForms > 1) {
       setNumForms(numForms - 1);
-      let ids = [...studentIds];
+      const ids = [...studentIds];
       ids[numForms - 1] = '';
       setStudentIds(ids);
-      let fails = [...authFail];
+      const fails = [...authFail];
       fails[numForms - 1] = false;
       setAuthFail(fails);
       setForms();
@@ -147,22 +147,22 @@ export default function StudentLogin() {
 
   return (
     <>
-      <img src={Logo} alt='logo' id='login-logo' />
-      <div id='form-container'>
+      <img src={Logo} alt="logo" id="login-logo" />
+      <div id="form-container">
         {setForms().map((form) => form)}
-        <div id='link-container'>
-          <button id='link-button' onClick={addStudent}>
+        <div id="link-container">
+          <button id="link-button" onClick={addStudent}>
             Add a student
           </button>
-          <button id='link-button' onClick={removeStudent}>
+          <button id="link-button" onClick={removeStudent}>
             Remove a student
           </button>
         </div>
-        {/*error && <div style={{ color: 'red' }}>{error}</div>*/}
-        <button id='login-button' type='submit' onClick={handleLogin}>
+        {/* error && <div style={{ color: 'red' }}>{error}</div> */}
+        <button id="login-button" type="submit" onClick={handleLogin}>
           Enter
         </button>
       </div>
-      </>
+    </>
   );
 }

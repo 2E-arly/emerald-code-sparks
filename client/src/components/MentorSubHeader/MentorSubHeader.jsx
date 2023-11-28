@@ -17,12 +17,12 @@ export default function MentorSubHeader(props) {
   } = props;
 
   return (
-    <div id='page-header'>
+    <div id="page-header">
       <h1>{title}</h1>
-      <span id='header-nav'>
+      <span id="header-nav">
         {addActivityActive ? (
-          <button id='link'>
-            <i className='fa fa-plus-square' />
+          <button id="link">
+            <i className="fa fa-plus-square" />
           </button>
         ) : null}
         {addUserActive ? (
@@ -32,18 +32,18 @@ export default function MentorSubHeader(props) {
           />
         ) : null}
         {cardViewActive ? (
-          <button onClick={() => setListView(false)} id='link'>
-            <i className='fa fa-th' />
+          <button onClick={() => setListView(false)} id="link">
+            <i className="fa fa-th" />
           </button>
         ) : null}
         {listViewActive ? (
-          <button onClick={() => setListView(true)} id='link'>
-            <i className='fa fa-list-alt' />
+          <button onClick={() => setListView(true)} id="link">
+            <i className="fa fa-list-alt" />
           </button>
         ) : null}
         {checkoutActive ? (
-          <Link id='link' to={'/dashboard'}>
-            <i className='fa fa-shopping-cart' />
+          <Link id="link" to="/dashboard">
+            <i className="fa fa-shopping-cart" />
           </Link>
         ) : null}
       </span>

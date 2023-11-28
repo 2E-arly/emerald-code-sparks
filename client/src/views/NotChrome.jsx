@@ -1,4 +1,4 @@
-const NotFound = () => {
+function NotFound() {
   return (
     <div
       style={{
@@ -6,14 +6,16 @@ const NotFound = () => {
       }}
     >
       <h1 style={{ textAlign: 'center', fontSize: '2.5rem', fontWeight: 600 }}>
-        Please use{' '}
-        <a href='https://www.google.com/chrome/' style={{ color: 'orange' }}>
+        Please use
+        {' '}
+        <a href="https://www.google.com/chrome/" style={{ color: 'orange' }}>
           Chrome
-        </a>{' '}
+        </a>
+        {' '}
         browser to run CaSMM
       </h1>
     </div>
   );
-};
+}
 
 export default NotFound;

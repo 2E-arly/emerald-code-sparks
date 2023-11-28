@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Input, Popconfirm, Switch, Table } from 'antd';
+import {
+  Form, Input, Popconfirm, Switch, Table,
+} from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import StudentModal from './StudentModal';
 import Picker from 'emoji-picker-react';
+import StudentModal from './StudentModal';
 
 export default function ListView(props) {
   const {
@@ -21,7 +23,7 @@ export default function ListView(props) {
   const [chosenCharacter, setChosenCharacter] = useState('');
   const [pickerVisible, setPickerVisible] = useState(false);
 
-  const EditableCell = ({
+  function EditableCell({
     editing,
     dataIndex,
     title,
@@ -30,7 +32,7 @@ export default function ListView(props) {
     index,
     children,
     ...restProps
-  }) => {
+  }) {
     return (
       <td {...restProps}>
         {editing ? (
@@ -42,14 +44,14 @@ export default function ListView(props) {
             rules={
               title === 'Name'
                 ? [
-                    {
-                      required: true,
-                      pattern: new RegExp(
-                        '^([A-Za-z]+)\\s*([A-Za-z]*)\\s+([A-Za-z])\\.$'
-                      ),
-                      message: `Must be in format: "First L." or "First Middle L."!`,
-                    },
-                  ]
+                  {
+                    required: true,
+                    pattern: new RegExp(
+                      '^([A-Za-z]+)\\s*([A-Za-z]*)\\s+([A-Za-z])\\.$',
+                    ),
+                    message: 'Must be in format: "First L." or "First Middle L."!',
+                  },
+                ]
                 : []
             }
           >
@@ -58,8 +60,8 @@ export default function ListView(props) {
             ) : (
               <div>
                 <Input
-                  id='editAnimal'
-                  value={chosenCharacter ? chosenCharacter : record.character}
+                  id="editAnimal"
+                  value={chosenCharacter || record.character}
                   onClick={() => setPickerVisible(true)}
                 />
                 {pickerVisible && (
@@ -88,20 +90,20 @@ export default function ListView(props) {
         )}
       </td>
     );
-  };
+  }
 
   // Use this function to trigger Input onChange Event.
-  //Otherwise it will not update the value you pick from Picker.
+  // Otherwise it will not update the value you pick from Picker.
   const triggerInput = (elementName, selectedValue) => {
-    var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
       window.HTMLInputElement.prototype,
-      'value'
+      'value',
     ).set;
 
     const input = document.getElementById(elementName);
 
     nativeInputValueSetter.call(input, selectedValue);
-    var event = new Event('input', { bubbles: true });
+    const event = new Event('input', { bubbles: true });
     input.dispatchEvent(event);
   };
 
@@ -150,7 +152,7 @@ export default function ListView(props) {
       render: (_, record) => (
         <StudentModal
           student={record}
-          linkBtn={true}
+          linkBtn
           getFormattedDate={getFormattedDate}
         />
       ),
@@ -164,9 +166,9 @@ export default function ListView(props) {
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
-          <span id='edit-options-span'>
+          <span id="edit-options-span">
             <button
-              id='link-btn'
+              id="link-btn"
               onClick={() => {
                 clearState();
                 save(record.key);
@@ -178,18 +180,18 @@ export default function ListView(props) {
               Save
             </button>
             <Popconfirm
-              title='Are you sure you want to cancel?'
+              title="Are you sure you want to cancel?"
               onConfirm={() => {
                 clearState();
                 cancelEdit();
               }}
             >
-              <button id='link-btn'>Cancel</button>
+              <button id="link-btn">Cancel</button>
             </Popconfirm>
           </span>
         ) : (
           <button
-            id='link-btn'
+            id="link-btn"
             disabled={editingKey !== ''}
             onClick={() => edit(record)}
           >
@@ -204,16 +206,15 @@ export default function ListView(props) {
       key: 'delete',
       width: '10%',
       align: 'right',
-      render: (text, record) =>
-        studentData.length >= 1 ? (
-          <Popconfirm
-            title={`Are you sure you want to delete all data for ${record.name}?`}
-            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-            onConfirm={() => handleDelete(record.key)}
-          >
-            <button id='link-btn'> Delete</button>
-          </Popconfirm>
-        ) : null,
+      render: (text, record) => (studentData.length >= 1 ? (
+        <Popconfirm
+          title={`Are you sure you want to delete all data for ${record.name}?`}
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          onConfirm={() => handleDelete(record.key)}
+        >
+          <button id="link-btn"> Delete</button>
+        </Popconfirm>
+      ) : null),
     },
     {
       title: 'Enrolled',
@@ -262,7 +263,7 @@ export default function ListView(props) {
   });
 
   return (
-    <div id='table-container'>
+    <div id="table-container">
       <Form form={form} component={false}>
         <Table
           columns={mergedColumns}
@@ -272,7 +273,7 @@ export default function ListView(props) {
               cell: EditableCell,
             },
           }}
-          rowClassName='editable-row'
+          rowClassName="editable-row"
           pagination={{
             onChange: cancelEdit,
           }}

@@ -1,8 +1,12 @@
-import React, { useEffect, useRef, useState, useReducer } from 'react';
+import React, {
+  useEffect, useRef, useState, useReducer,
+} from 'react';
 import { Link } from 'react-router-dom';
 import '../../ActivityLevels.less';
+import {
+  message, Spin, Row, Col, Alert, Menu, Dropdown,
+} from 'antd';
 import { compileArduinoCode } from '../../Utils/helpers';
-import { message, Spin, Row, Col, Alert, Menu, Dropdown } from 'antd';
 import CodeModal from '../modals/CodeModal';
 import ConsoleModal from '../modals/ConsoleModal';
 import PlotterModal from '../modals/PlotterModal';
@@ -50,13 +54,11 @@ export default function PublicCanvas({ activity, isSandbox }) {
   }, [activity]);
 
   const handleUndo = () => {
-    if (workspaceRef.current.undoStack_.length > 0)
-      workspaceRef.current.undo(false);
+    if (workspaceRef.current.undoStack_.length > 0) workspaceRef.current.undo(false);
   };
 
   const handleRedo = () => {
-    if (workspaceRef.current.redoStack_.length > 0)
-      workspaceRef.current.undo(true);
+    if (workspaceRef.current.redoStack_.length > 0) workspaceRef.current.undo(true);
   };
 
   const handleConsole = async () => {
@@ -69,7 +71,7 @@ export default function PublicCanvas({ activity, isSandbox }) {
       // connect to port
       await handleOpenConnection(9600, 'newLine');
       // if fail to connect to port, return
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -99,9 +101,9 @@ export default function PublicCanvas({ activity, isSandbox }) {
         plotData,
         setPlotData,
         plotId,
-        forceUpdate
+        forceUpdate,
       );
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -120,13 +122,13 @@ export default function PublicCanvas({ activity, isSandbox }) {
   const handleCompile = async () => {
     if (showConsole || showPlotter) {
       message.warning(
-        'Close Serial Monitor and Serial Plotter before uploading your code'
+        'Close Serial Monitor and Serial Plotter before uploading your code',
       );
     } else {
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         await connectToPort();
       }
-      if (typeof window['port'] === 'undefined') {
+      if (typeof window.port === 'undefined') {
         message.error('Fail to select serial device');
         return;
       }
@@ -136,7 +138,7 @@ export default function PublicCanvas({ activity, isSandbox }) {
         setSelectedCompile,
         setCompileError,
         activity,
-        false
+        false,
       );
     }
   };
@@ -147,54 +149,54 @@ export default function PublicCanvas({ activity, isSandbox }) {
         <PlotterLogo />
         &nbsp; Show Serial Plotter
       </Menu.Item>
-      <CodeModal title={'XML'} workspaceRef={workspaceRef.current} />
+      <CodeModal title="XML" workspaceRef={workspaceRef.current} />
       <Menu.Item>
-        <CodeModal title={'Arduino Code'} workspaceRef={workspaceRef.current} />
+        <CodeModal title="Arduino Code" workspaceRef={workspaceRef.current} />
       </Menu.Item>
     </Menu>
   );
 
   return (
-    <div id='horizontal-container' className='flex flex-column'>
-      <div className='flex flex-row'>
+    <div id="horizontal-container" className="flex flex-column">
+      <div className="flex flex-row">
         <div
-          id='bottom-container'
-          className='flex flex-column vertical-container overflow-visible'
+          id="bottom-container"
+          className="flex flex-column vertical-container overflow-visible"
         >
           <Spin
-            tip='Compiling Code Please Wait... It may take up to 20 seconds to compile your code.'
-            className='compilePop'
-            size='large'
+            tip="Compiling Code Please Wait... It may take up to 20 seconds to compile your code."
+            className="compilePop"
+            size="large"
             spinning={selectedCompile}
           >
-            <Row id='icon-control-panel'>
-              <Col flex='none' id='section-header'>
+            <Row id="icon-control-panel">
+              <Col flex="none" id="section-header">
                 Program your Arduino...
               </Col>
-              <Col flex='auto'>
-                <Row align='middle' justify='end' id='description-container'>
-                  <Col flex={'30px'}>
+              <Col flex="auto">
+                <Row align="middle" justify="end" id="description-container">
+                  <Col flex="30px">
                     <Row>
                       <Col>
-                        <Link id='link' to={'/'} className='flex flex-column'>
-                          <i className='fa fa-home fa-lg' />
+                        <Link id="link" to="/" className="flex flex-column">
+                          <i className="fa fa-home fa-lg" />
                         </Link>
                       </Col>
                     </Row>
                   </Col>
-                  <Col flex='auto' />
+                  <Col flex="auto" />
 
-                  <Col flex={'200px'}>
+                  <Col flex="200px">
                     <Row>
-                      <Col className='flex flex-row'>
+                      <Col className="flex flex-row">
                         <button
                           onClick={handleUndo}
-                          id='link'
-                          className='flex flex-column'
+                          id="link"
+                          className="flex flex-column"
                         >
                           <i
-                            id='icon-btn'
-                            className='fa fa-undo-alt'
+                            id="icon-btn"
+                            className="fa fa-undo-alt"
                             style={
                               workspaceRef.current
                                 ? workspaceRef.current.undoStack_.length < 1
@@ -206,17 +208,17 @@ export default function PublicCanvas({ activity, isSandbox }) {
                             onMouseLeave={() => setHoverUndo(false)}
                           />
                           {hoverUndo && (
-                            <div className='popup ModalCompile4'>Undo</div>
+                            <div className="popup ModalCompile4">Undo</div>
                           )}
                         </button>
                         <button
                           onClick={handleRedo}
-                          id='link'
-                          className='flex flex-column'
+                          id="link"
+                          className="flex flex-column"
                         >
                           <i
-                            id='icon-btn'
-                            className='fa fa-redo-alt'
+                            id="icon-btn"
+                            className="fa fa-redo-alt"
                             style={
                               workspaceRef.current
                                 ? workspaceRef.current.redoStack_.length < 1
@@ -228,55 +230,55 @@ export default function PublicCanvas({ activity, isSandbox }) {
                             onMouseLeave={() => setHoverRedo(false)}
                           />
                           {hoverRedo && (
-                            <div className='popup ModalCompile4'>Redo</div>
+                            <div className="popup ModalCompile4">Redo</div>
                           )}
                         </button>
                       </Col>
                     </Row>
                   </Col>
-                  <Col flex={'230px'}>
+                  <Col flex="230px">
                     <div
-                      id='action-btn-container'
-                      className='flex space-around'
+                      id="action-btn-container"
+                      className="flex space-around"
                     >
                       <ArduinoLogo
                         setHoverCompile={setHoverCompile}
                         handleCompile={handleCompile}
                       />
                       {hoverCompile && (
-                        <div className='popup ModalCompile'>
+                        <div className="popup ModalCompile">
                           Upload to Arduino
                         </div>
                       )}
 
                       <i
                         onClick={() => handleConsole()}
-                        className='fas fa-terminal hvr-info'
+                        className="fas fa-terminal hvr-info"
                         style={{ marginLeft: '6px' }}
                         onMouseEnter={() => setHoverConsole(true)}
                         onMouseLeave={() => setHoverConsole(false)}
                       />
                       {hoverConsole && (
-                        <div className='popup ModalCompile'>
+                        <div className="popup ModalCompile">
                           Show Serial Monitor
                         </div>
                       )}
                       <Dropdown overlay={menu}>
-                        <i className='fas fa-ellipsis-v'></i>
+                        <i className="fas fa-ellipsis-v" />
                       </Dropdown>
                     </div>
                   </Col>
                 </Row>
               </Col>
             </Row>
-            <div id='blockly-canvas' />
+            <div id="blockly-canvas" />
           </Spin>
         </div>
         <ConsoleModal
           show={showConsole}
           connectionOpen={connectionOpen}
           setConnectionOpen={setConnectionOpen}
-        ></ConsoleModal>
+        />
         <PlotterModal
           show={showPlotter}
           connectionOpen={connectionOpen}
@@ -288,13 +290,13 @@ export default function PublicCanvas({ activity, isSandbox }) {
       </div>
 
       {/* This xml is for the blocks' menu we will provide. Here are examples on how to include categories and subcategories */}
-      <xml id='toolbox' is='Blockly workspace'>
+      <xml id="toolbox" is="Blockly workspace">
         {
           // Maps out block categories
-          activity &&
-            activity.toolbox &&
-            activity.toolbox.map(([category, blocks]) => (
-              <category name={category} is='Blockly category' key={category}>
+          activity
+            && activity.toolbox
+            && activity.toolbox.map(([category, blocks]) => (
+              <category name={category} is="Blockly category" key={category}>
                 {
                   // maps out blocks in category
                   // eslint-disable-next-line
@@ -302,7 +304,7 @@ export default function PublicCanvas({ activity, isSandbox }) {
                     return (
                       <block
                         type={block.name}
-                        is='Blockly block'
+                        is="Blockly block"
                         key={block.name}
                       />
                     );
@@ -316,10 +318,10 @@ export default function PublicCanvas({ activity, isSandbox }) {
       {compileError && (
         <Alert
           message={compileError}
-          type='error'
+          type="error"
           closable
           onClose={(e) => setCompileError('')}
-        ></Alert>
+        />
       )}
     </div>
   );

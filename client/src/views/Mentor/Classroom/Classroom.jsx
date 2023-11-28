@@ -1,13 +1,12 @@
-import {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Tabs } from 'antd';
 import './Classroom.less';
 
+import { useSearchParams, useParams } from 'react-router-dom';
 import NavBar from '../../../components/NavBar/NavBar';
 import Roster from './Roster/Roster';
 import Home from './Home/Home';
 import SavedWorkSpaceTab from '../../../components/Tabs/SavedWorkspaceTab';
-import { useSearchParams, useParams } from 'react-router-dom';
-import React from 'react';
 
 const { TabPane } = Tabs;
 
@@ -24,17 +23,16 @@ export default function Classroom({
 
   useEffect(() => {
     sessionStorage.setItem('classroomId', id);
-
   }, [id]);
 
   return (
-    <div className='container nav-padding'>
-      <NavBar isMentor={true} />
+    <div className="container nav-padding">
+      <NavBar isMentor />
       <Tabs
-        defaultActiveKey={tab ? tab : 'home'}
+        defaultActiveKey={tab || 'home'}
         onChange={(key) => setSearchParams({ tab: key })}
       >
-        <TabPane tab='Home' key='home'>
+        <TabPane tab="Home" key="home">
           <Home
             classroomId={parseInt(id)}
             selectedActivity={selectedActivity}
@@ -42,10 +40,10 @@ export default function Classroom({
             viewing={viewing}
           />
         </TabPane>
-        <TabPane tab='Roster' key='roster'>
+        <TabPane tab="Roster" key="roster">
           <Roster handleLogout={handleLogout} classroomId={id} />
         </TabPane>
-        <TabPane tab='Saved Workspaces' key='workspace'>
+        <TabPane tab="Saved Workspaces" key="workspace">
           <SavedWorkSpaceTab
             searchParams={searchParams}
             setSearchParams={setSearchParams}

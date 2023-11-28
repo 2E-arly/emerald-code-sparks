@@ -1,15 +1,15 @@
 import React from 'react';
-import Logo from "../../assets/casmm_logo.png";
+import Logo from '../../assets/casmm_logo.png';
 import './Home.less';
-import HomeJoin from "./HomeJoin";
+import HomeJoin from './HomeJoin';
 
-const Home = () => {
-    return(
-        <div id='join-wrapper'>
-            <img src={Logo} id='casmm-logo' alt='logo'/>
-            <HomeJoin />
-        </div>
-        )
-    }
+function Home() {
+  return (
+    <div id="join-wrapper">
+      <img src={Logo} id="casmm-logo" alt="logo" />
+      <HomeJoin />
+    </div>
+  );
+}
 
 export default Home;

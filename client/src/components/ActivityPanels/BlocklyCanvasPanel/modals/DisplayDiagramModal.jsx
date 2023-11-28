@@ -1,37 +1,37 @@
-import { Modal, Button } from "antd"
-import React, { useState } from "react"
+import { Modal, Button } from 'antd';
+import React, { useState } from 'react';
 
 export default function DisplayDiagramModal(props) {
-  const [visible, setVisible] = useState(false)
-  const { image } = props
-  const [hover, setHover] = useState(false)
+  const [visible, setVisible] = useState(false);
+  const { image } = props;
+  const [hover, setHover] = useState(false);
   const showModal = () => {
-    setVisible(true)
-  }
+    setVisible(true);
+  };
   const onHover = () => {
-    setHover(true)
-  }
+    setHover(true);
+  };
   const onLeave = () => {
-    setHover(false)
-  }
+    setHover(false);
+  };
   const handleCancel = () => {
-    setVisible(false)
-  }
+    setVisible(false);
+  };
 
   const handleOk = () => {
-    setVisible(false)
-  }
+    setVisible(false);
+  };
 
-  const links = new String(image)
-  let items = links.split("\n").filter(item => item != "" || item != " ")
-  let width = items.length * 700
+  const links = new String(image);
+  const items = links.split('\n').filter((item) => item != '' || item != ' ');
+  const width = items.length * 700;
   return (
     <div
       id="display-diagram-modal"
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
     >
-      {hover ? <div className="popup ModalCompile">Diagrams</div> : ""}
+      {hover ? <div className="popup ModalCompile">Diagrams</div> : ''}
       <Button id="link">
         <svg
           width="25"
@@ -42,7 +42,7 @@ export default function DisplayDiagramModal(props) {
           onClick={showModal}
           xmlns="http://www.w3.org/2000/svg"
         >
-          <defs></defs>
+          <defs />
           <g
             id="image"
             stroke="none"
@@ -58,14 +58,14 @@ export default function DisplayDiagramModal(props) {
                 <path
                   d="M336,3725.5 C336,3724.948 336.448,3724.5 337,3724.5 C337.552,3724.5 338,3724.948 338,3725.5 C338,3726.052 337.552,3726.5 337,3726.5 C336.448,3726.5 336,3726.052 336,3725.5 L336,3725.5 Z M340,3733 L328,3733 L332.518,3726.812 L335.354,3730.625 L336.75,3728.75 L340,3733 Z M326,3735 L342,3735 L342,3723 L326,3723 L326,3735 Z M324,3737 L344,3737 L344,3721 L324,3721 L324,3737 Z"
                   id="image_picture-[#972]"
-                ></path>
+                />
               </g>
             </g>
           </g>
         </svg>
       </Button>
       <Modal
-        title={"Diagrams"}
+        title="Diagrams"
         visible={visible}
         onCancel={handleCancel}
         width={width}
@@ -76,10 +76,10 @@ export default function DisplayDiagramModal(props) {
         ]}
       >
         <div id="code-display-text">
-          {items.map(src => (
-            
+          {items.map((src) => (
+
             <img
-            key={src}
+              key={src}
               src={src}
               display="block"
               position="relative"
@@ -91,5 +91,5 @@ export default function DisplayDiagramModal(props) {
         </div>
       </Modal>
     </div>
-  )
+  );
 }

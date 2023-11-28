@@ -5,22 +5,24 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Slider, Col, Row } from 'antd';
+import {
+  Slider, Col, Row, Table,
+} from 'antd';
 import './Replay.less';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Table } from 'antd';
-import { getSave } from '../../Utils/requests';
 import { CSVDownloader } from 'react-papaparse';
+import { getSave } from '../../Utils/requests';
+
 const TIME_LINE_SIZE = 25;
 
 const timelineReducer = (timeline, action) => {
   const checkTimelineStepInBound = () => {
     if (timeline.step >= timeline.endIndex) {
-      let newEnd = Math.min(timeline.length, timeline.step + 7);
+      const newEnd = Math.min(timeline.length, timeline.step + 7);
       timeline.endIndex = newEnd;
       timeline.startIndex = newEnd - TIME_LINE_SIZE;
     } else if (timeline.step < timeline.startIndex) {
-      let newStart = Math.max(0, timeline.step - 6);
+      const newStart = Math.max(0, timeline.step - 6);
       timeline.startIndex = newStart;
       timeline.endIndex = newStart + TIME_LINE_SIZE;
     }
@@ -65,7 +67,7 @@ const timelineReducer = (timeline, action) => {
   }
 };
 
-const Replay = () => {
+function Replay() {
   const { saveID } = useParams();
   const workspaceRef = useRef(null);
   const [replay, setReplay] = useState([]);
@@ -88,7 +90,7 @@ const Replay = () => {
       startIndex: 0,
       endIndex: TIME_LINE_SIZE,
       length: 0,
-    }
+    },
   );
 
   const setWorkspace = () => {
@@ -98,12 +100,10 @@ const Replay = () => {
     });
   };
 
-  const formatMyDate = (timestamp, locale = 'en-GB') => {
-    return new Date(timestamp).toLocaleTimeString(locale);
-  };
+  const formatMyDate = (timestamp, locale = 'en-GB') => new Date(timestamp).toLocaleTimeString(locale);
 
   const makeFilter = (data, category) => {
-    let filter = [];
+    const filter = [];
     const map = new Map();
 
     data.forEach((element) => {
@@ -125,21 +125,19 @@ const Replay = () => {
         type: 'FetchReplayLength',
         value: save.data.replay ? save.data.replay.length : 0,
       });
-      //set log
-      let data = save.data.replay.map((item, index) => {
-        return {
-          key: index,
-          blockId: item.blockId,
-          blockType: item.blockType,
-          timestamp: item.timestamp,
-          action: item.action,
-        };
-      });
+      // set log
+      const data = save.data.replay.map((item, index) => ({
+        key: index,
+        blockId: item.blockId,
+        blockType: item.blockType,
+        timestamp: item.timestamp,
+        action: item.action,
+      }));
 
       setLogData(data);
       setCsvData(data.slice(0).reverse());
       setCsvFilename(
-        `${save.data.student.name}_${save.data.created_at}_code_replay`
+        `${save.data.student.name}_${save.data.created_at}_code_replay`,
       );
 
       setActionFilter(makeFilter(data, 'action'));
@@ -208,14 +206,14 @@ const Replay = () => {
   };
 
   const setStep = (value) => {
-    dispatchTimelineReducer({ type: 'SetStepValue', value: value });
+    dispatchTimelineReducer({ type: 'SetStepValue', value });
   };
 
   const handlePlay = () => {
     setPlaybackRef(
       setInterval(() => {
         goForward();
-      }, playSpeed)
+      }, playSpeed),
     );
 
     setIsPlaying(true);
@@ -229,7 +227,7 @@ const Replay = () => {
     setIsPlaying(false);
   }, [playbackRef]);
 
-  //handle dynamic playback changes
+  // handle dynamic playback changes
   useEffect(() => {
     if (replay.length) {
       if (timelineStates.step >= replay.length - 1 && isPlaying) handlePause();
@@ -237,10 +235,11 @@ const Replay = () => {
       workspaceRef.current ? workspaceRef.current.clear() : setWorkspace();
       const xml = window.Blockly.Xml.textToDom(replay[timelineStates.step].xml);
       window.Blockly.Xml.domToWorkspace(xml, workspaceRef.current);
-      if (replay[timelineStates.step].blockId)
+      if (replay[timelineStates.step].blockId) {
         window.Blockly.mainWorkspace
           .getBlockById(replay[timelineStates.step].blockId)
           ?.select();
+      }
       setAction(replay[timelineStates.step].action);
     }
   }, [replay, timelineStates, isPlaying, handlePause]);
@@ -262,47 +261,47 @@ const Replay = () => {
   };
 
   return (
-    <main className='container nav-padding'>
-      <div id='horizontal-container' className='flex flex-column'>
-        <div id='top-container' className='flex flex-column vertical-container'>
+    <main className="container nav-padding">
+      <div id="horizontal-container" className="flex flex-column">
+        <div id="top-container" className="flex flex-column vertical-container">
           <div
-            id='description-container'
-            className='flex flex-row space-between card'
+            id="description-container"
+            className="flex flex-row space-between card"
           >
-            <div className='flex flex-row'>
+            <div className="flex flex-row">
               <button
                 onClick={handleGoBack}
-                id='link'
-                className='flex flex-column'
+                id="link"
+                className="flex flex-column"
               >
-                <i id='icon-btn' className='fa fa-arrow-left' />
+                <i id="icon-btn" className="fa fa-arrow-left" />
               </button>
             </div>
-            <div className='flex flex-row'>
-              <div className='flex flex-row'>
+            <div className="flex flex-row">
+              <div className="flex flex-row">
                 &#128034;
                 <Slider
-                  className='playspeed-slider'
+                  className="playspeed-slider"
                   defaultValue={playSpeed}
                   max={1000}
                   min={50}
                   step={50}
                   onAfterChange={changePlaySpeed}
                   disabled={isPlaying}
-                  reverse={true}
+                  reverse
                   tooltipVisible={false}
                 />
                 &#128007;
               </div>
               <button
-                className='replayButton'
+                className="replayButton"
                 onClick={goBack}
                 disabled={timelineStates.step <= 0}
               >
                 &#9198;
               </button>
               <button
-                className='replayButton'
+                className="replayButton"
                 onClick={isPlaying ? handlePause : handlePlay}
                 disabled={timelineStates.step >= replay.length - 1}
               >
@@ -313,7 +312,7 @@ const Replay = () => {
                 )}
               </button>
               <button
-                className='replayButton'
+                className="replayButton"
                 onClick={goForward}
                 disabled={timelineStates.step >= replay.length - 1}
               >
@@ -321,15 +320,16 @@ const Replay = () => {
               </button>
             </div>
           </div>
-          <div id='timeline-container'>
+          <div id="timeline-container">
             <button
               disabled={timelineStates.startIndex <= 0}
               onClick={scrollTimelineBackward}
             >
               {' '}
-              &#8249;{' '}
+              &#8249;
+              {' '}
             </button>
-            <div id='timeline'>
+            <div id="timeline">
               {replay
                 .map((item, index) => (
                   <div
@@ -355,69 +355,63 @@ const Replay = () => {
           </div>
         </div>
 
-        <div className='flex flex-row'>
+        <div className="flex flex-row">
           <div
-            id='bottom-container'
-            className='flex flex-column vertical-container overflow-visible'
+            id="bottom-container"
+            className="flex flex-column vertical-container overflow-visible"
           >
-            <Row id='icon-control-panel'>
-              <Col flex='none' id='section-header'>
+            <Row id="icon-control-panel">
+              <Col flex="none" id="section-header">
                 Code Replay
               </Col>
-              <Col flex='auto' id='action-title'>
+              <Col flex="auto" id="action-title">
                 {`[${timelineStates.step + 1}/${
                   replay.length
                 }] Action: ${action}`}
                 {replay[timelineStates.step]?.blockType !== '' && (
-                  <>{`, Block Type: ${
-                    replay[timelineStates.step]?.blockType
-                  }`}</>
+                  <>
+                    {`, Block Type: ${
+                      replay[timelineStates.step]?.blockType
+                    }`}
+                  </>
                 )}
               </Col>
             </Row>
-            <div id='blockly-canvas' />
+            <div id="blockly-canvas" />
           </div>
         </div>
-        <div className='flex flex-row'>
+        <div className="flex flex-row">
           <section
-            id='bottom-container'
-            className='flex flex-column vertical-container overflow-visible'
+            id="bottom-container"
+            className="flex flex-column vertical-container overflow-visible"
           >
-            <div className='flex flex-row space-between'>
-              <h2 id='logs-title'>Logs</h2>
+            <div className="flex flex-row space-between">
+              <h2 id="logs-title">Logs</h2>
               <CSVDownloader
                 filename={csvFilename}
-                type={'button'}
-                bom={true}
-                data={() => {
-                  return csvData.map((log) => {
-                    return {
-                      'No.': log.key + 1,
-                      timestamp: formatMyDate(log.timestamp),
-                      action: log.action,
-                      'block type': log.blockType,
-                      'block id': log.blockId,
-                    };
-                  });
-                }}
+                type="button"
+                bom
+                data={() => csvData.map((log) => ({
+                  'No.': log.key + 1,
+                  timestamp: formatMyDate(log.timestamp),
+                  action: log.action,
+                  'block type': log.blockType,
+                  'block id': log.blockId,
+                }))}
               >
                 Download to CSV
               </CSVDownloader>
             </div>
 
             <Table
-              id='replay-log'
-              rowClassName={(record, index) =>
-                'table-row ' +
-                (record.key === timelineStates.step
+              id="replay-log"
+              rowClassName={(record, index) => `table-row ${
+                record.key === timelineStates.step
                   ? 'table-row-dark'
-                  : 'table-row-light')
-              }
-              onRow={(record, index) => {
-                return {
-                  onClick: () => setStep(record.key),
-                };
-              }}
+                  : 'table-row-light'}`}
+              onRow={(record, index) => ({
+                onClick: () => setStep(record.key),
+              })}
               scroll={{ y: 300 }}
               pagination={false}
               columns={columns}
@@ -429,9 +423,9 @@ const Replay = () => {
           </section>
         </div>
       </div>
-      <xml id='toolbox' is='Blockly workspace'></xml>
+      <xml id="toolbox" is="Blockly workspace" />
     </main>
   );
-};
+}
 
 export default Replay;

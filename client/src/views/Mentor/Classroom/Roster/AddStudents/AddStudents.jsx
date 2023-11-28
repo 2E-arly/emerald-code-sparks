@@ -1,29 +1,29 @@
-import { Divider, message, Table } from "antd"
-import Picker from "emoji-picker-react"
-import { parseFullName } from "parse-full-name"
-import React, { useState } from "react"
-import { CSVReader } from "react-papaparse"
-import { addStudent, addStudents } from "../../../../../Utils/requests"
-import "./AddStudents.less"
+import { Divider, message, Table } from 'antd';
+import Picker from 'emoji-picker-react';
+import { parseFullName } from 'parse-full-name';
+import React, { useState } from 'react';
+import { CSVReader } from 'react-papaparse';
+import { addStudent, addStudents } from '../../../../../Utils/requests';
+import './AddStudents.less';
 
 export default function AddStudents({ classroomId, addStudentsToTable }) {
-  const [name, setName] = useState("")
-  const [uploadedRoster, setUploadedRoster] = useState([])
-  const [tableData, setTableData] = useState([])
-  const [chosenCharacter, setChosenCharacter] = useState(null)
+  const [name, setName] = useState('');
+  const [uploadedRoster, setUploadedRoster] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [chosenCharacter, setChosenCharacter] = useState(null);
 
-  const buttonRef = React.createRef()
+  const buttonRef = React.createRef();
 
-  const nameIsFormatted = n => {
-    let name = parseFullName(n)
-    return Boolean(name.first && name.last)
-  }
+  const nameIsFormatted = (n) => {
+    const name = parseFullName(n);
+    return Boolean(name.first && name.last);
+  };
 
-  const reformatName = n => {
+  const reformatName = (n) => {
     // check "Last, First" / "Last, First Middle"
-    let name = parseFullName(n)
+    const name = parseFullName(n);
     if (name.first && name.last) {
-      return `${name.first} ${name.last[0]}.`
+      return `${name.first} ${name.last[0]}.`;
     }
     // if (n.search('^([A-Za-z]+),\\s*([A-Za-z]+)\\s*([A-Za-z]+)') !== -1) {
     //   let names = n.split(' ');
@@ -36,124 +36,119 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
     //   return n;
     // }
     // return null. not properly formatted
-    else return null
-  }
+    return null;
+  };
 
   const handleManualAdd = async () => {
-    const formattedName = reformatName(name)
+    const formattedName = reformatName(name);
     if (!formattedName) {
       message.warning(
-        "Please verify that the name you entered is in the specified format.",
-        6
-      )
-      return
+        'Please verify that the name you entered is in the specified format.',
+        6,
+      );
+      return;
     }
     const res = await addStudent(
       formattedName,
       chosenCharacter ? chosenCharacter.emoji : null,
-      classroomId
-    )
+      classroomId,
+    );
     if (res.data) {
-      addStudentsToTable([res.data])
+      addStudentsToTable([res.data]);
       message.success(
-        `${formattedName} has been added to the roster successfully.`
-      )
-      setChosenCharacter(null)
-      setName("")
+        `${formattedName} has been added to the roster successfully.`,
+      );
+      setChosenCharacter(null);
+      setName('');
     } else {
-      message.error(res.err)
+      message.error(res.err);
     }
-  }
+  };
 
   const handleCsvAdd = async () => {
-    const students = await uploadedRoster.map(student => {
-      return {
-        name: student.name.trim(),
-        character: student.animal.trim(),
-      }
-    })
-    const res = await addStudents(students, classroomId)
+    const students = await uploadedRoster.map((student) => ({
+      name: student.name.trim(),
+      character: student.animal.trim(),
+    }));
+    const res = await addStudents(students, classroomId);
     if (res.data) {
-      addStudentsToTable(res.data)
-      message.success("Uploaded roster added to classroom successfully.")
+      addStudentsToTable(res.data);
+      message.success('Uploaded roster added to classroom successfully.');
     } else {
-      message.error(res.err)
+      message.error(res.err);
     }
-  }
+  };
 
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: "Animal",
-      dataIndex: "animal",
-      key: "animal",
+      title: 'Animal',
+      dataIndex: 'animal',
+      key: 'animal',
     },
-  ]
+  ];
 
-  const getTableData = async students => {
-    const tableData = await students.map((student, index) => {
-      return {
-        key: index,
-        name: student.name,
-        animal: student.animal,
-      }
-    })
-    return tableData
-  }
+  const getTableData = async (students) => {
+    const tableData = await students.map((student, index) => ({
+      key: index,
+      name: student.name,
+      animal: student.animal,
+    }));
+    return tableData;
+  };
 
-  const handleOnDrop = async roster => {
+  const handleOnDrop = async (roster) => {
     // on file select, filter out bad data and set uploadedRoster and tableData
-    let badInput = false
-    let students = roster.filter(student => {
+    let badInput = false;
+    let students = roster.filter((student) => {
       if (student.data.name) {
-        if (nameIsFormatted(student.data.name.trim())) return true
-        badInput = true
+        if (nameIsFormatted(student.data.name.trim())) return true;
+        badInput = true;
       }
-      return false
-    })
-    students = await students.map(student => {
-      return {
-        name: reformatName(student.data.name.trim()),
-        animal: student.data.animal.trim(),
-      }
-    })
+      return false;
+    });
+    students = await students.map((student) => ({
+      name: reformatName(student.data.name.trim()),
+      animal: student.data.animal.trim(),
+    }));
 
-    setUploadedRoster(students)
-    const data = await getTableData(students)
-    setTableData(data)
-    if (badInput || students.length === 0)
+    setUploadedRoster(students);
+    const data = await getTableData(students);
+    setTableData(data);
+    if (badInput || students.length === 0) {
       message.warning(
-        "There may have been an issue parsing one or more data entries in the uploaded CSV. " +
-          " Please verify that your data is in the specified format.",
-        8
-      )
-  }
+        'There may have been an issue parsing one or more data entries in the uploaded CSV. '
+          + ' Please verify that your data is in the specified format.',
+        8,
+      );
+    }
+  };
 
   const handleOnRemoveFile = () => {
     // clear uploadedRoster and tableData when file is unselected
-    setUploadedRoster([])
-    setTableData([])
-  }
+    setUploadedRoster([]);
+    setTableData([]);
+  };
 
-  const handleRemoveFile = e => {
+  const handleRemoveFile = (e) => {
     // Note that the ref is set async, so it might be null at some point
     if (buttonRef.current) {
-      buttonRef.current.removeFile(e)
+      buttonRef.current.removeFile(e);
     }
-  }
+  };
 
   const handleOnError = (err, file, inputElem, reason) => {
-    console.error(err)
-    message.error("Failed to parse the uploaded file.")
-  }
+    console.error(err);
+    message.error('Failed to parse the uploaded file.');
+  };
 
   const onEmojiClick = (event, emojiObject) => {
-    setChosenCharacter(emojiObject)
-  }
+    setChosenCharacter(emojiObject);
+  };
 
   return (
     <div id="add-students">
@@ -167,8 +162,8 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
           <input
             type="text"
             value={name}
-            onChange={e => {
-              setName(e.target.value)
+            onChange={(e) => {
+              setName(e.target.value);
             }}
             id="name"
             name="name"
@@ -176,7 +171,10 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
           />
           <div id="emoji-picker">
             {chosenCharacter ? (
-              <span>Student Character: {chosenCharacter.emoji}</span>
+              <span>
+                Student Character:
+                {chosenCharacter.emoji}
+              </span>
             ) : (
               <span>Optional: Student Character</span>
             )}
@@ -209,7 +207,8 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
           First Middle", "First L." or "First Middle L."
         </p>
         <p>
-          Sample Student Name CSV File:{" "}
+          Sample Student Name CSV File:
+          {' '}
           <a
             href="https://drive.google.com/file/d/1MeGaw3oMP_uEEvaIqp_Sa6zDN3dfy2lS/view?usp=sharing"
             target="_blank"
@@ -223,14 +222,13 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
           onDrop={handleOnDrop}
           onError={handleOnError}
           onRemoveFile={handleOnRemoveFile}
-          progressBarColor={"#5BABDE"}
+          progressBarColor="#5BABDE"
           config={{
             header: true,
-            transformHeader: h => {
-              let header = h.toLowerCase().trim()
-              if (header === "student" || header === ["student name"])
-                header = "name"
-              return header
+            transformHeader: (h) => {
+              let header = h.toLowerCase().trim();
+              if (header === 'student' || header === ['student name']) header = 'name';
+              return header;
             },
           }}
           addRemoveButton
@@ -244,19 +242,19 @@ export default function AddStudents({ classroomId, addStudentsToTable }) {
               dataSource={tableData}
               columns={columns}
               size="small"
-              title={() => "Review your uploaded roster:"}
+              title={() => 'Review your uploaded roster:'}
             />
             <input
               type="button"
               value="Add Students"
-              onClick={e => {
-                handleRemoveFile(e)
-                handleCsvAdd(e)
+              onClick={(e) => {
+                handleRemoveFile(e);
+                handleCsvAdd(e);
               }}
             />
           </div>
         ) : null}
       </div>
     </div>
-  )
+  );
 }

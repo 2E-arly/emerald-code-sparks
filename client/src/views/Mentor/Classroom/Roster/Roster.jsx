@@ -21,7 +21,7 @@ export default function Roster({ classroomId }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let data = [];
+    const data = [];
     getClassroom(classroomId).then((res) => {
       if (res.data) {
         const classroom = res.data;
@@ -47,21 +47,18 @@ export default function Roster({ classroomId }) {
 
   const getFormattedDate = (value, locale = 'en-US') => {
     if (value) {
-      let output = new Date(value).toLocaleDateString(locale);
-      return output + ' ' + new Date(value).toLocaleTimeString(locale);
-    } else {
-      return 'N/A';
+      const output = new Date(value).toLocaleDateString(locale);
+      return `${output} ${new Date(value).toLocaleTimeString(locale)}`;
     }
+    return 'N/A';
   };
 
   const onEnrollToggle = async (id, toggled) => {
     const res = await setEnrollmentStatus(id, toggled);
     if (res.data) {
       const updatedStudent = res.data;
-      let newStudentData = [...studentData];
-      const index = studentData.findIndex(function (student) {
-        return student.key === id;
-      });
+      const newStudentData = [...studentData];
+      const index = studentData.findIndex((student) => student.key === id);
       newStudentData[index] = {
         key: updatedStudent.id,
         name: updatedStudent.name,
@@ -74,7 +71,7 @@ export default function Roster({ classroomId }) {
       };
       setStudentData(newStudentData);
       message.success(
-        `Successfully updated ${updatedStudent.name}'s enrollment status.`
+        `Successfully updated ${updatedStudent.name}'s enrollment status.`,
       );
     } else {
       message.error(res.err);
@@ -82,19 +79,17 @@ export default function Roster({ classroomId }) {
   };
 
   const addStudentsToTable = (students) => {
-    let newStudentData = [...studentData];
-    students.forEach((student) =>
-      newStudentData.push({
-        key: student.id,
-        name: student.name,
-        character: student.character,
-        enrolled: {
-          id: student.id,
-          enrolled: student.enrolled,
-        },
-        last_logged_in: student.last_logged_in,
-      })
-    );
+    const newStudentData = [...studentData];
+    students.forEach((student) => newStudentData.push({
+      key: student.id,
+      name: student.name,
+      character: student.character,
+      enrolled: {
+        id: student.id,
+        enrolled: student.enrolled,
+      },
+      last_logged_in: student.last_logged_in,
+    }));
     setStudentData(newStudentData);
   };
 
@@ -133,13 +128,13 @@ export default function Roster({ classroomId }) {
       }
 
       // update student in db
-      let student = classroom.students.find((student) => student.id === key);
-      for (let attribute in row) student[attribute] = row[attribute];
+      const student = classroom.students.find((student) => student.id === key);
+      for (const attribute in row) student[attribute] = row[attribute];
       if (student) {
         const res = await updateStudent(student.id, student);
         if (res.data) {
           message.success(
-            `Successfully updated ${res.data.name}'s information.`
+            `Successfully updated ${res.data.name}'s information.`,
           );
         } else {
           message.error(res.err);
@@ -168,13 +163,13 @@ export default function Roster({ classroomId }) {
 
   return (
     <div>
-      <button id='home-back-btn' onClick={handleBack}>
-        <i className='fa fa-arrow-left' aria-hidden='true' />
+      <button id="home-back-btn" onClick={handleBack}>
+        <i className="fa fa-arrow-left" aria-hidden="true" />
       </button>
       <MentorSubHeader
-        title={'Your Students'}
+        title="Your Students"
         addStudentsToTable={addStudentsToTable}
-        addUserActive={true}
+        addUserActive
         classroomId={classroomId}
         cardViewActive={listView}
         listViewActive={!listView}

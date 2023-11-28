@@ -26,11 +26,11 @@ export const openConnection = async (
   plotData,
   setPlotData,
   plotId,
-  forceUpdate
+  forceUpdate,
 ) => {
-  //requesting port on the pop up window.
-  port = window['port'];
-  var options = {
+  // requesting port on the pop up window.
+  port = window.port;
+  const options = {
     baudRate: baudRate_,
     parity: 'none',
     dataBits: 8,
@@ -50,7 +50,7 @@ const readUntilClose = async (
   plotData,
   setPlotData,
   plotId,
-  forceUpdate
+  forceUpdate,
 ) => {
   const textDecoder = new window.TextDecoderStream();
   readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
@@ -73,22 +73,20 @@ const readUntilClose = async (
       string += value;
       document.getElementById('console-content').innerHTML = string;
     } else if (type === 'newLine') {
-      let newP = document.createElement('p');
+      const newP = document.createElement('p');
       newP.innerHTML = value;
       newP.style.margin = 0;
       document.getElementById('console-content').appendChild(newP);
       newP.scrollIntoView();
-    } else {
-      if (!isNaN(value)) {
-        if (plotData.length > 200) {
-          plotData.shift();
-        }
-        plotData.push({ id: plotId, input: parseInt(value) });
-        plotId += 1;
-        setPlotData(plotData);
-        forceUpdate();
-        await new Promise((resolve) => setTimeout(resolve, 50));
+    } else if (!isNaN(value)) {
+      if (plotData.length > 200) {
+        plotData.shift();
       }
+      plotData.push({ id: plotId, input: parseInt(value) });
+      plotId += 1;
+      setPlotData(plotData);
+      forceUpdate();
+      await new Promise((resolve) => setTimeout(resolve, 50));
     }
   }
 };
@@ -126,7 +124,7 @@ export const connectToPort = async () => {
     console.error(e);
     return;
   }
-  window['port'] = port;
+  window.port = port;
 };
 
 export const handleOpenConnection = async (
@@ -135,11 +133,11 @@ export const handleOpenConnection = async (
   plotData,
   setPlotData,
   plotId,
-  forceUpdate
+  forceUpdate,
 ) => {
-  if (typeof window['port'] === 'undefined') {
+  if (typeof window.port === 'undefined') {
     await connectToPort();
-    if (typeof window['port'] === 'undefined') {
+    if (typeof window.port === 'undefined') {
       return;
     }
   }
@@ -149,7 +147,7 @@ export const handleOpenConnection = async (
     plotData,
     setPlotData,
     plotId,
-    forceUpdate
+    forceUpdate,
   );
 };
 

@@ -1,14 +1,14 @@
 import React from 'react';
-import NavBar from './components/NavBar/NavBar';
 import { Outlet } from 'react-router-dom';
+import NavBar from './components/NavBar/NavBar';
 
-const AppLayout = () => {
+function AppLayout() {
   return (
-    <div className='container nav-padding'>
+    <div className="container nav-padding">
       <NavBar />
-      <Outlet/>
+      <Outlet />
     </div>
   );
-};
+}
 
 export default AppLayout;

@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { getSession } from '../../../Utils/requests';
 import './ActivityLevelReportView.less';
 
-const ActivityLevelReportView = () => {
+function ActivityLevelReportView() {
   const { id } = useParams();
   const [session, setSession] = useState({});
   const [studentName, setStudentsName] = useState([]);
@@ -12,7 +12,7 @@ const ActivityLevelReportView = () => {
   const [clicks, setClicks] = useState(0);
   const navigate = useNavigate();
 
-  useEffect(function () {
+  useEffect(() => {
     const getData = async () => {
       const session = await getSession(id);
       setSession(session.data);
@@ -36,7 +36,7 @@ const ActivityLevelReportView = () => {
   }, []);
 
   const timeConverter = (timestamp) => {
-    var dateVal = new Date(timestamp).toLocaleString();
+    const dateVal = new Date(timestamp).toLocaleString();
     return dateVal;
   };
 
@@ -53,7 +53,7 @@ const ActivityLevelReportView = () => {
     if (session.saves?.length) {
       const latestSave = session.saves[session.saves.length - 1];
       return (
-        <Link id='replay-btn' className='btn' to={`/replay/${latestSave.id}`}>
+        <Link id="replay-btn" className="btn" to={`/replay/${latestSave.id}`}>
           View Code Replay
         </Link>
       );
@@ -61,21 +61,21 @@ const ActivityLevelReportView = () => {
   };
   return (
     <>
-      <div className='menu-bar'>
-        <div id='activity-level-report-header'>Activity Level - Student Report</div>
+      <div className="menu-bar">
+        <div id="activity-level-report-header">Activity Level - Student Report</div>
         <button
-          id={'activity-level-return'}
+          id="activity-level-return"
           className={`btn-${'primary'} btn-${'sm'}`}
-          type='button'
+          type="button"
           onClick={() => navigate(-1)}
         >
           Return to Activity Level
         </button>
       </div>
 
-      <main id='content-wrapper'>
-        <section id='container-section'>
-          <section id='student-report-section'>
+      <main id="content-wrapper">
+        <section id="container-section">
+          <section id="student-report-section">
             <p>
               <strong>Student Name: </strong>
               {studentName}
@@ -103,15 +103,17 @@ const ActivityLevelReportView = () => {
             </p>
             <p>
               <strong>Times Tested: </strong>
-              {session.submissions?.length} times
+              {session.submissions?.length}
+              {' '}
+              times
             </p>
           </section>
         </section>
         <br />
         {showReplayButton()}
       </main>
-      </>
+    </>
   );
-};
+}
 
 export default ActivityLevelReportView;

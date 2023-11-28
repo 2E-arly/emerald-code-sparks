@@ -61,14 +61,14 @@ export function useSearchParam() {
       };
     } else {
       obj = paramObj;
-      if (_start !== null) obj['_start'] = _start;
-      if (_sort) obj['_sort'] = _sort;
-      if (pageSize !== null) obj['pageSize'] = pageSize;
-      if (grade) obj['grade'] = grade;
-      if (lesson_module) obj['lesson_module'] = lesson_module;
-      if (unit) obj['unit'] = unit;
-      if (classroom) obj['classroom'] = classroom;
-      if (student) obj['students_in'] = student;
+      if (_start !== null) obj._start = _start;
+      if (_sort) obj._sort = _sort;
+      if (pageSize !== null) obj.pageSize = pageSize;
+      if (grade) obj.grade = grade;
+      if (lesson_module) obj.lesson_module = lesson_module;
+      if (unit) obj.unit = unit;
+      if (classroom) obj.classroom = classroom;
+      if (student) obj.students_in = student;
     }
     Object.keys(obj).forEach((key) => {
       if (obj[key] == null) delete obj[key];

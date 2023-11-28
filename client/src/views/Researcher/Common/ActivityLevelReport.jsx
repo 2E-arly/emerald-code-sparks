@@ -13,7 +13,7 @@ import {
 import { ReportFilter as Filter } from './ReportFilter';
 import './ActivityLevelReport.less';
 
-const ActivityLevelReport = () => {
+function ActivityLevelReport() {
   const [sessions, setSessions] = useState([]);
   const [sessionCount, setSessionCount] = useState(0);
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const ActivityLevelReport = () => {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  
+
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -70,11 +70,11 @@ const ActivityLevelReport = () => {
       setTbUnitFilter(makeFilter(sessionRes.data, 'unit'));
       setTbLessonFilter(makeFilter(sessionRes.data, 'lesson_module'));
     };
-    if (paramObj['_sort']) fetchData();
+    if (paramObj._sort) fetchData();
   }, [paramObj]);
 
   const makeTbNameFilter = (data) => {
-    let filter = [];
+    const filter = [];
     const map = new Map();
 
     data.forEach((element) => {
@@ -90,7 +90,7 @@ const ActivityLevelReport = () => {
   };
 
   const makeFilter = (data, category) => {
-    let filter = [];
+    const filter = [];
     const map = new Map();
 
     data.forEach((element) => {
@@ -104,8 +104,8 @@ const ActivityLevelReport = () => {
   };
 
   const formatMyDate = (value, locale = 'en-US') => {
-    let output = new Date(value).toLocaleDateString(locale);
-    return output + ' ' + new Date(value).toLocaleTimeString(locale);
+    const output = new Date(value).toLocaleDateString(locale);
+    return `${output} ${new Date(value).toLocaleTimeString(locale)}`;
   };
 
   const columns = [
@@ -120,7 +120,6 @@ const ActivityLevelReport = () => {
         key.students.forEach((student) => {
           if (student.name.indexOf(value) === 0) {
             result = true;
-            return;
           }
         });
         return result;
@@ -161,8 +160,7 @@ const ActivityLevelReport = () => {
       width: '3%',
       align: 'left',
       filters: tbLessonFilter,
-      onFilter: (value, key) =>
-        key.lesson_module?.name.indexOf(value) === 0,
+      onFilter: (value, key) => key.lesson_module?.name.indexOf(value) === 0,
     },
     {
       title: 'Session Started',
@@ -171,24 +169,21 @@ const ActivityLevelReport = () => {
       width: '4%',
       align: 'left',
       sorter: true,
-      sortOrder: paramObj['_sort'] === 'created_at:DESC' ? 'descend' : 'ascend',
+      sortOrder: paramObj._sort === 'created_at:DESC' ? 'descend' : 'ascend',
       sortDirections:
-        paramObj['_sort'] === 'created_at:DESC'
+        paramObj._sort === 'created_at:DESC'
           ? ['ascend', 'descend', 'ascend']
           : ['descend', 'ascend', 'descend'],
-      onHeaderCell: () => {
-        return {
-          onClick: () => {
-            const _start = paramObj['_start'];
-            const pageSize = paramObj['pageSize'];
-            const _sort =
-              paramObj['_sort'] === 'created_at:DESC'
-                ? 'created_at:ASC'
-                : 'created_at:DESC';
-            setSearchParam({ _start, _sort, pageSize });
-          },
-        };
-      },
+      onHeaderCell: () => ({
+        onClick: () => {
+          const { _start } = paramObj;
+          const { pageSize } = paramObj;
+          const _sort = paramObj._sort === 'created_at:DESC'
+            ? 'created_at:ASC'
+            : 'created_at:DESC';
+          setSearchParam({ _start, _sort, pageSize });
+        },
+      }),
       render: (_, key) => <div>{formatMyDate(key.created_at)}</div>,
     },
     {
@@ -219,18 +214,18 @@ const ActivityLevelReport = () => {
 
   return (
     <>
-      <div className='menu-bar'>
-        <div id='activity-level-report-header'>Activity Level - Student Report</div>
+      <div className="menu-bar">
+        <div id="activity-level-report-header">Activity Level - Student Report</div>
 
         <button
-          className='activity-level-return'
+          className="activity-level-return"
           onClick={() => navigate('/researcher/report')}
         >
           Return to Dashboard
         </button>
 
       </div>
-      <button id='show-filter-btn' onClick={() => setShowFilter(!showFilter)}>
+      <button id="show-filter-btn" onClick={() => setShowFilter(!showFilter)}>
         {showFilter ? (
           <p> Click to Hide Filter</p>
         ) : (
@@ -238,29 +233,29 @@ const ActivityLevelReport = () => {
         )}
       </button>
       {showFilter ? (
-        <div className='filter-show'>
-          <div className='filter-items'>
+        <div className="filter-show">
+          <div className="filter-items">
             <Filter setSearchParam={setSearchParam} paramObj={paramObj} />
           </div>
         </div>
       ) : (
-        <div className='filter-hide'>
+        <div className="filter-hide">
           <Filter setSearchParam={setSearchParam} paramObj={paramObj} />
         </div>
       )}
-      <main id='activity-report-content-wrapper'>
+      <main id="activity-report-content-wrapper">
         <Table
           columns={columns}
           dataSource={sessions}
-          rowKey='id'
+          rowKey="id"
           onChange={(Pagination, filters) => {
             if (
-              tbPrevFilter == null ||
-              JSON.stringify(filters) === JSON.stringify(tbPrevFilter)
+              tbPrevFilter == null
+              || JSON.stringify(filters) === JSON.stringify(tbPrevFilter)
             ) {
               setSearchParam({
                 _start: (Pagination.current - 1) * Pagination.pageSize,
-                _sort: paramObj['_sort'],
+                _sort: paramObj._sort,
                 pageSize: Pagination.pageSize,
               });
               if (tbPrevFilter == null) {
@@ -271,16 +266,16 @@ const ActivityLevelReport = () => {
             }
           }}
           pagination={{
-            current: paramObj['_start'] / paramObj['pageSize'] + 1,
+            current: paramObj._start / paramObj.pageSize + 1,
             showQuickJumper: true,
             showSizeChanger: true,
-            pageSize: paramObj['pageSize'] || 10,
+            pageSize: paramObj.pageSize || 10,
             total: sessionCount,
           }}
         />
       </main>
-      </>
+    </>
   );
-};
+}
 
 export default ActivityLevelReport;

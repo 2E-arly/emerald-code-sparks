@@ -1,4 +1,6 @@
-import { Modal, Button, Typography, Menu } from 'antd';
+import {
+  Modal, Button, Typography, Menu,
+} from 'antd';
 import React, { useState } from 'react';
 import { getArduino, getXml } from '../../Utils/helpers';
 
@@ -20,15 +22,15 @@ export default function CodeModal(props) {
   };
 
   return (
-    <div id='code-modal'>
+    <div id="code-modal">
       {title === 'XML' ? (
         <Menu.Item onClick={showModal}>
-          <i className='far fa-file-code' />
+          <i className="far fa-file-code" />
           &nbsp;Show XML
         </Menu.Item>
       ) : (
-        <Menu.Item id='show-arduino-icon' onClick={showModal}>
-          <i className='fas fa-code' />
+        <Menu.Item id="show-arduino-icon" onClick={showModal}>
+          <i className="fas fa-code" />
           &nbsp;Show Arduino Code
         </Menu.Item>
       )}
@@ -36,15 +38,15 @@ export default function CodeModal(props) {
         title={title}
         visible={visible}
         onCancel={handleCancel}
-        width='50vw'
+        width="50vw"
         footer={[
-          <Button key='ok' type='primary' onClick={handleOk}>
+          <Button key="ok" type="primary" onClick={handleOk}>
             OK
           </Button>,
         ]}
       >
         {workspaceRef ? (
-          <div id='code-text-box'>
+          <div id="code-text-box">
             <Text copyable style={{ whiteSpace: 'pre-wrap' }}>
               {title === 'XML'
                 ? getXml(workspaceRef, false)

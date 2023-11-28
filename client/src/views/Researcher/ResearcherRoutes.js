@@ -1,3 +1,3 @@
 const RESEARCHER_ROUTES = {
-    home: "/",
-}
+  home: '/',
+};

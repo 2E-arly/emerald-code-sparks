@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Modal, Button, Tag, Form, Input, Select } from 'antd';
+import {
+  Modal, Button, Tag, Form, Input, Select,
+} from 'antd';
 import './CreateStudyPage.less';
-//import FormItem from 'antd/es/form/FormItem';
-import { sendEmail, getAllStudents, getStudies, getResearchers, addStudy, getStudent, getAllClassrooms, getClassroom, getSessions, getSession, createStudentInvite} from '../../Utils/requests';
+// import FormItem from 'antd/es/form/FormItem';
+import {
+  sendEmail, getAllStudents, getStudies, getResearchers, addStudy, getStudent, getAllClassrooms, getClassroom, getSessions, getSession, createStudentInvite,
+} from '../../Utils/requests';
 
 const { Option } = Select;
-const studyTagsDefault = ["qualitative", "quantitative", "design", "TBD"];
+const studyTagsDefault = ['qualitative', 'quantitative', 'design', 'TBD'];
 
-const CreateStudyPage =()=>{
+function CreateStudyPage() {
   const [students, setStudents] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [classrooms, setClassrooms] = useState([]);
@@ -24,7 +28,7 @@ const CreateStudyPage =()=>{
   const [searchBarForm] = Form.useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  //=== Fetch All Data === 
+  //= == Fetch All Data ===
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -65,7 +69,7 @@ const CreateStudyPage =()=>{
         if (researchersRes.error) {
           console.error('Failed to retrieve researchers');
         } else {
-          //send email to researcher
+          // send email to researcher
           setResearchers(researchersRes.data);
         }
       } catch (error) {
@@ -87,27 +91,27 @@ const CreateStudyPage =()=>{
   const handleClassroomChange = async (selectedValues) => {
     const classroomData = [];
     for (const classroomID of selectedValues) {
-      //instead of getting classroom by id, search from the list of all classrooms
+      // instead of getting classroom by id, search from the list of all classrooms
       const allClasses = await getAllClassrooms();
       const classroom = allClasses.data.find((classroom) => classroom.id === classroomID);
-      //append to classroomData
+      // append to classroomData
       classroomData.push(classroom);
     }
     setSelectedClassroomsData(classroomData);
-  }
-    
+  };
+
   const handleCheckboxChange = (checkboxId) => (e) => {
     setCheckboxValues((prevValues) => ({
       ...prevValues,
       [checkboxId]: e.target.checked,
     }));
   };
-  
+
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const ResetCheckboxEffect = ({ checkboxForm, checkboxValues }) => {
+  function ResetCheckboxEffect({ checkboxForm, checkboxValues }) {
     useEffect(() => {
       checkboxForm.setFieldsValue({
         'Profile Info': false,
@@ -117,9 +121,9 @@ const CreateStudyPage =()=>{
         'Screen Recording': false,
       });
     }, [checkboxValues]);
-  
+
     return null;
-  };
+  }
 
   const handleSubmitStudy = async () => {
     /*
@@ -142,27 +146,27 @@ const CreateStudyPage =()=>{
         student_invites [string]
       }
     */
-    
+
     // Get study form values
     const studyValues = studyForm.getFieldsValue();
-    //sanitize data
-    //TODO: Fix errors relating to null value
-    studyValues['Study name'] = studyValues['Study name'].replace(/[^a-zA-Z0-9 ]/g, "");
-    studyValues['Study ID'] = studyValues['Study ID'].replace(/[^a-zA-Z0-9 ]/g, "");
-    //check if defined 
+    // sanitize data
+    // TODO: Fix errors relating to null value
+    studyValues['Study name'] = studyValues['Study name'].replace(/[^a-zA-Z0-9 ]/g, '');
+    studyValues['Study ID'] = studyValues['Study ID'].replace(/[^a-zA-Z0-9 ]/g, '');
+    // check if defined
     if (studyValues['Study description'] === undefined) {
-      studyValues['Study description'] = "";
+      studyValues['Study description'] = '';
     } else {
-      studyValues['Study description'] = studyValues['Study description'].replace(/[^a-zA-Z0-9 ]/g, "");
+      studyValues['Study description'] = studyValues['Study description'].replace(/[^a-zA-Z0-9 ]/g, '');
     }
-    //keep @ and . for email
-    //studyValues['Student Email'] = studyValues['Student Email'].replace(/[^a-zA-Z0-9@. ]/g, "");
+    // keep @ and . for email
+    // studyValues['Student Email'] = studyValues['Student Email'].replace(/[^a-zA-Z0-9@. ]/g, "");
 
     // Use the updated checkboxValues state
     const values = {
       ...studyValues,
       checkboxes: checkboxValues,
-      selectedStudentsData: selectedStudentsData,
+      selectedStudentsData,
       newResearchers: selectedResearchers,
       selectTags: selectedStudyTag.toString(),
       classrooms: selectedClassrooms,
@@ -173,7 +177,7 @@ const CreateStudyPage =()=>{
       name: values['Study name'],
       studyID: values['Study ID'],
       description: values['Study description'],
-      //studentEmail: values['Student Email'],
+      // studentEmail: values['Student Email'],
       checkboxes: values.checkboxes,
       searchBar: values.searchBar,
     };
@@ -186,57 +190,57 @@ const CreateStudyPage =()=>{
 
     if (!values.newTag) {
       values.newTag = [];
-      values.newTag.push("");
+      values.newTag.push('');
     }
 
-    //iterate through classrooms and add students to study
+    // iterate through classrooms and add students to study
     for (const classroom of values.classrooms) {
-      //use getStudent
+      // use getStudent
       for (const student of classroom.students) {
-        //add them to study
-        //get student
+        // add them to study
+        // get student
         const studentData = await getStudent(student.id);
-        //add study to selected student
+        // add study to selected student
         selectedStudentsData.push(studentData.data);
       }
     }
 
-    //Iterate through students to create appropriate invites
-    console.error(selectedStudentsData)
-    let consentingStudents = []
+    // Iterate through students to create appropriate invites
+    console.error(selectedStudentsData);
+    let consentingStudents = [];
     for (const student of selectedStudentsData) {
-      console.log("Checking" + student.name)
-      if(student.sessions.length > 0){
-        for( const session of student["sessions"]){
-          const fetchedSession = await getSession(session.id).then(x => x.data)
-          console.warn(fetchedSession)
-          for( const sessionStudent of fetchedSession["students"]){
-            consentingStudents.push(sessionStudent)
+      console.log(`Checking${student.name}`);
+      if (student.sessions.length > 0) {
+        for (const session of student.sessions) {
+          const fetchedSession = await getSession(session.id).then((x) => x.data);
+          console.warn(fetchedSession);
+          for (const sessionStudent of fetchedSession.students) {
+            consentingStudents.push(sessionStudent);
           }
         }
       }
     }
-    console.info("Consenting Students:")
-    //deduplicate invites list
+    console.info('Consenting Students:');
+    // deduplicate invites list
     const result = [];
     const map = new Map();
     for (const item of consentingStudents) {
-        if(!map.has(item.id)){
-            map.set(item.id, true);    // set any value to Map
-            result.push(item);
-        }
+      if (!map.has(item.id)) {
+        map.set(item.id, true); // set any value to Map
+        result.push(item);
+      }
     }
     consentingStudents = result;
     console.log(consentingStudents);
 
-    //Deduplicated selected student data
+    // Deduplicated selected student data
     const result2 = [];
     const map2 = new Map();
     for (const item of selectedStudentsData) {
-        if(!map2.has(item.id)){
-            map2.set(item.id, true);
-            result2.push(item);
-        }
+      if (!map2.has(item.id)) {
+        map2.set(item.id, true);
+        result2.push(item);
+      }
     }
     setSelectedStudentsData(result2);
 
@@ -249,33 +253,33 @@ const CreateStudyPage =()=>{
       studyName: values['Study name'],
       studyTag: values.selectTags,
       consentOptions: consentOptionsReformat,
-      student_invites: []
-    }
+      student_invites: [],
+    };
     console.log(studyData);
 
-    //post study to database
+    // post study to database
     await addStudy(studyData);
-    //send email to all added researchers
+    // send email to all added researchers
     for (const researcher of values.newResearchers) {
       const emailTemplate = {
-        name: researcher.first_name + ' ' + researcher.last_name,
+        name: `${researcher.first_name} ${researcher.last_name}`,
         email: researcher.researcherEmail,
         studyID: values['Study ID'],
-      }
+      };
       sendEmail(emailTemplate);
     }
-    await setTimeout(async () =>{
-    for(let student of consentingStudents){
-      let invite = {
-        study: parseInt(studyData.studyID),
-        student: student.id,
-        Consent: false,
+    await setTimeout(async () => {
+      for (const student of consentingStudents) {
+        const invite = {
+          study: parseInt(studyData.studyID),
+          student: student.id,
+          Consent: false,
+        };
+        await createStudentInvite(invite).then((x) => console.log(x));
       }
-      await createStudentInvite(invite).then(x => console.log(x))
-    }}, 1000)
+    }, 1000);
 
-    console.log("DONEDONE🚨")
-    
+    console.log('DONEDONE🚨');
 
     // Clear form fields
     studyForm.resetFields();
@@ -286,62 +290,63 @@ const CreateStudyPage =()=>{
     setSelectedStudyTag(null);
     setSelectedResearchers([]);
     setIsModalVisible(false);
-  }
-  
+  };
+
   const handleCancel = () => {
     setIsModalVisible(false);
-  }
+  };
 
-  
-
-  return (<>
-      <div className='menu-bar'>
-        <div id='create-study-header'>Create New study</div>
+  return (
+    <>
+      <div className="menu-bar">
+        <div id="create-study-header">Create New study</div>
         <button
-          className='activity-level-return'
+          className="activity-level-return"
           onClick={() => navigate('/researcher/report')}
         >
           Return to Dashboard
         </button>
       </div>
-      <div id='button-container'>
-        <Form form={studyForm} id={"study-form"}>
+      <div id="button-container">
+        <Form form={studyForm} id="study-form">
           <h1 id="new-study-header">Study Information</h1>
           <Form.Item
-          name="Study name"
-          label="Name"
-          rules={[
-            {
-              required: true,
-              message: 'Please enter name of study',
-            },
-          ]}> 
-            <Input/>
+            name="Study name"
+            label="Name"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter name of study',
+              },
+            ]}
+          >
+            <Input />
           </Form.Item>
           <Form.Item
-          name = "Study ID"
-          label="ID"
-          rules={[
-            {
-              required: true,
-              message: 'Please enter ID of study',
-            },
-          ]}>
-            <Input/>
+            name="Study ID"
+            label="ID"
+            rules={[
+              {
+                required: true,
+                message: 'Please enter ID of study',
+              },
+            ]}
+          >
+            <Input />
           </Form.Item>
           <Form.Item
-          name="Study description"
-          label="Description">
+            name="Study description"
+            label="Description"
+          >
             <textarea
-            style={{ maxHeight: '100px', resize: 'vertical', width: '100%'}}>
+              style={{ maxHeight: '100px', resize: 'vertical', width: '100%' }}
+            />
 
-            </textarea>
-            
           </Form.Item>
-            <Form.Item>
+          <Form.Item>
             <Select
-              className='select'
-              placeholder='Select a Study Tag'
+              className="select"
+              placeholder="Select a Study Tag"
               value={selectedStudyTag}
               onChange={(value) => setSelectedStudyTag(value)}
               allowClear
@@ -357,53 +362,55 @@ const CreateStudyPage =()=>{
           </Form.Item>
           <Form.Item>
             <Select
-              mode='multiple'
-              className='select'
-              placeholder='Select a Researcher'
+              mode="multiple"
+              className="select"
+              placeholder="Select a Researcher"
               onChange={(value) => setSelectedResearchers(value)}
               allowClear
             >
               {researchers.map((researcher) => (
                 <Select.Option key={researcher.id} value={researcher.id}>
-                  {researcher.first_name} {researcher.last_name}
+                  {researcher.first_name}
+                  {' '}
+                  {researcher.last_name}
                 </Select.Option>
               ))}
             </Select>
           </Form.Item>
         </Form>
-        <Form form={checkboxForm} id={"checkbox-form"}>
+        <Form form={checkboxForm} id="checkbox-form">
           <Form.Item className="checkbox-item">
-            <input type="checkbox" id="checkbox-1" onChange={handleCheckboxChange("Profile Info")} />
+            <input type="checkbox" id="checkbox-1" onChange={handleCheckboxChange('Profile Info')} />
             <label htmlFor="checkbox-1" className="checkbox-label">Profile Info</label>
           </Form.Item>
           <Form.Item className="checkbox-item">
-            <input type="checkbox" id="checkbox-2" onChange={handleCheckboxChange("Access to Code Samples")}/>
+            <input type="checkbox" id="checkbox-2" onChange={handleCheckboxChange('Access to Code Samples')} />
             <label htmlFor="checkbox-2" className="checkbox-label">Access to Code Samples</label>
           </Form.Item>
           <Form.Item className="checkbox-item">
-            <input type="checkbox" id="checkbox-3" onChange={handleCheckboxChange("Messaging and Emails")}/>
+            <input type="checkbox" id="checkbox-3" onChange={handleCheckboxChange('Messaging and Emails')} />
             <label htmlFor="checkbox-3" className="checkbox-label">Messaging and Emails</label>
           </Form.Item>
           <Form.Item className="checkbox-item">
-            <input type="checkbox" id="checkbox-4" onChange={handleCheckboxChange("Access to Video/Lesson Usage")}/>
+            <input type="checkbox" id="checkbox-4" onChange={handleCheckboxChange('Access to Video/Lesson Usage')} />
             <label htmlFor="checkbox-4" className="checkbox-label">Access to Video/Lesson Usage</label>
           </Form.Item>
           <Form.Item className="checkbox-item">
-            <input type="checkbox" id="checkbox-5" onChange={handleCheckboxChange("Screen Recording")}/>
+            <input type="checkbox" id="checkbox-5" onChange={handleCheckboxChange('Screen Recording')} />
             <label htmlFor="checkbox-5" className="checkbox-label">Screen Recording</label>
           </Form.Item>
         </Form>
         <ResetCheckboxEffect checkboxForm={checkboxForm} checkboxValues={checkboxValues} />
-        <Form form={searchBarForm} id={"search-bar-form"}>
+        <Form form={searchBarForm} id="search-bar-form">
           <Form.Item>
-          <Select
+            <Select
               mode="multiple"
               placeholder="Search for a Student"
               onChange={handleStudentChange}
-              value={selectedStudentsData.map(student => student.id)}  // Use selectedStudentsData
+              value={selectedStudentsData.map((student) => student.id)} // Use selectedStudentsData
               className="search-bar"
             >
-              {students.map(student => (
+              {students.map((student) => (
                 <Option key={student.id} value={student.id}>
                   {student.name}
                 </Option>
@@ -418,22 +425,26 @@ const CreateStudyPage =()=>{
             >
               {classrooms.map((classroom) => (
                 <Option key={classroom.id} value={classroom.id}>
-                  {classroom.id !== null && classroom.id !== undefined ? classroom.id : 'No ID'} - {classroom.name}
+                  {classroom.id !== null && classroom.id !== undefined ? classroom.id : 'No ID'}
+                  {' '}
+                  -
+                  {classroom.name}
                 </Option>
               ))}
             </Select>
 
           </Form.Item>
-          <Button className='add-researcher-button' onClick={showModal}>
-              Submit Study Request 
+          <Button className="add-researcher-button" onClick={showModal}>
+            Submit Study Request
           </Button>
           <Modal title="Submit Study Request" visible={isModalVisible} onOk={handleSubmitStudy} onCancel={handleCancel}>
             <p>Are you sure you want to submit this study request?</p>
           </Modal>
-          
+
         </Form>
       </div>
-  </>)
-};
+    </>
+  );
+}
 
 export default CreateStudyPage;

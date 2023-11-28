@@ -3,7 +3,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './ActivityLevelReport.less';
 
-const StudyBrowser = () => {
+function StudyBrowser() {
   const navigate = useNavigate();
   const columns = [
     {
@@ -39,8 +39,7 @@ const StudyBrowser = () => {
       key: 'lesson_module',
       width: '3%',
       align: 'left',
-      onFilter: (value, key) =>
-        key.lesson_module?.name.indexOf(value) === 0,
+      onFilter: (value, key) => key.lesson_module?.name.indexOf(value) === 0,
     }, {
       title: 'Session Started',
       dataIndex: 'created_at',
@@ -66,11 +65,11 @@ const StudyBrowser = () => {
 
   return (
     <>
-      <div className='menu-bar'>
-        <div id='activity-level-report-header'>Report Browser</div>
-        <button className='activity-level-return' onClick={() => navigate('/report')}> Return to Dashboard </button>
+      <div className="menu-bar">
+        <div id="activity-level-report-header">Report Browser</div>
+        <button className="activity-level-return" onClick={() => navigate('/report')}> Return to Dashboard </button>
       </div>
-      <main id='activity-report-content-wrapper'>
+      <main id="activity-report-content-wrapper">
         {/* <Table
           columns={columns} //Defined above, might need to improve typings
           dataSource= //Where the data comes from
@@ -84,8 +83,8 @@ const StudyBrowser = () => {
           }}
         /> */}
       </main>
-      </>
+    </>
   );
-};
+}
 
 export default StudyBrowser;

@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-const NotFound = () => {
+function NotFound() {
   return (
     <div style={{ marginTop: '5rem' }}>
       <h1 style={{ margin: '0 auto', fontSize: '5rem', textAlign: 'center' }}>
@@ -10,7 +10,7 @@ const NotFound = () => {
         Page Not Found
       </h1>
     </div>
-  )
-};
+  );
+}
 
 export default NotFound;

@@ -1,71 +1,73 @@
-import { Button, Card, Form, List, message, Modal } from "antd"
-import React, { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import {
+  Button, Card, Form, List, message, Modal,
+} from 'antd';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   createActivity,
   deleteActivity,
   getActivityToolbox,
   getActivityToolboxAll,
   getLessonModule,
-} from "../../../Utils/requests"
-import "./ActivityEditor.less"
+} from '../../../Utils/requests';
+import './ActivityEditor.less';
 
 export default function ContentCreator({ learningStandard }) {
-  const [visible, setVisible] = useState(false)
-  const [activities, setActivities] = useState([])
+  const [visible, setVisible] = useState(false);
+  const [activities, setActivities] = useState([]);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleCancel = () => {
-    setVisible(false)
-  }
+    setVisible(false);
+  };
 
   const showModal = async () => {
-    const lsResponse = await getLessonModule(learningStandard.id)
-    const myActivities = lsResponse.data.activities
-    myActivities.sort((a, b) => (a.number > b.number ? 1 : -1))
-    setActivities([...myActivities])
-    setVisible(true)
-  }
+    const lsResponse = await getLessonModule(learningStandard.id);
+    const myActivities = lsResponse.data.activities;
+    myActivities.sort((a, b) => (a.number > b.number ? 1 : -1));
+    setActivities([...myActivities]);
+    setVisible(true);
+  };
 
   const addBasicActivity = async () => {
-    let newActivity = 1
+    let newActivity = 1;
     if (activities.length !== 0) {
-      newActivity = parseInt(activities[activities.length - 1].number) + 1
+      newActivity = parseInt(activities[activities.length - 1].number) + 1;
     }
 
-    const response = await createActivity(newActivity, learningStandard.id)
+    const response = await createActivity(newActivity, learningStandard.id);
     if (response.err) {
-      message.error(response.err)
+      message.error(response.err);
     }
-    setActivities([...activities, response.data])
-  }
+    setActivities([...activities, response.data]);
+  };
 
-  const removeBasicActivity = async currActivity => {
+  const removeBasicActivity = async (currActivity) => {
     if (window.confirm(`Deleting Activity ${currActivity.number}`)) {
-      const response = await deleteActivity(currActivity.id)
+      const response = await deleteActivity(currActivity.id);
       if (response.err) {
-        message.error(response.err)
+        message.error(response.err);
       }
 
-      const lsResponse = await getLessonModule(learningStandard.id)
+      const lsResponse = await getLessonModule(learningStandard.id);
       if (lsResponse.err) {
-        message.error(lsResponse.err)
+        message.error(lsResponse.err);
       }
-      setActivities([...lsResponse.data.activities])
+      setActivities([...lsResponse.data.activities]);
     }
-  }
+  };
 
-  const handleViewActivities = async activity => {
-    const allToolBoxRes = await getActivityToolboxAll()
-    const selectedToolBoxRes = await getActivityToolbox(activity.id)
-    activity.selectedToolbox = selectedToolBoxRes.data.toolbox
-    activity.toolbox = allToolBoxRes.data.toolbox
+  const handleViewActivities = async (activity) => {
+    const allToolBoxRes = await getActivityToolboxAll();
+    const selectedToolBoxRes = await getActivityToolbox(activity.id);
+    activity.selectedToolbox = selectedToolBoxRes.data.toolbox;
+    activity.toolbox = allToolBoxRes.data.toolbox;
 
-    activity.lesson_module_name = learningStandard.name
-    localStorage.setItem("my-activity", JSON.stringify(activity))
-    navigate("/activity")
-  }
+    activity.lesson_module_name = learningStandard.name;
+    localStorage.setItem('my-activity', JSON.stringify(activity));
+    navigate('/activity');
+  };
 
   return (
     <div>
@@ -85,13 +87,13 @@ export default function ContentCreator({ learningStandard }) {
             <List
               grid={{ gutter: 16, column: 3 }}
               dataSource={activities}
-              renderItem={item => (
+              renderItem={(item) => (
                 <List.Item>
                   <Card
                     id="card-activity"
                     key={item.id}
-                    title={"Activity " + item.number}
-                    hoverable={true}
+                    title={`Activity ${item.number}`}
+                    hoverable
                     onClick={() => handleViewActivities(item)}
                   />
                   <span
@@ -121,5 +123,5 @@ export default function ContentCreator({ learningStandard }) {
         </div>
       </Modal>
     </div>
-  )
+  );
 }
