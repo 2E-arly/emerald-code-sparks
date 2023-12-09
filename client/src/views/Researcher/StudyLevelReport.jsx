@@ -314,8 +314,8 @@ const StudyLevelReport = () => {
     <div className='container nav-padding'>
       <div className='menu-bar'>
         <div id='activity-level-report-header'>Study Level Report</div>
-        <Button onClick={() => navigate('/researcher/createStudyPage')} style={{ backgroundColor: 'green', color: 'white' }}>
-          Create Study
+        <Button onClick={() => navigate('/researcher/createStudyPage')} id="create-study-btn">
+          + Create Study
         </Button>
         <button
           className='activity-level-return'
