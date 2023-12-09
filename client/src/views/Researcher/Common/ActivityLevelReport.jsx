@@ -198,7 +198,7 @@ const ActivityLevelReport = () => {
       width: '2%',
       align: 'right',
       render: (_, session) => (
-        <Link to={`/activityLevel/${session.id}`}>View Report</Link>
+        <Link to={`/researcher/activityLevel/${session.id}`}>View Report</Link>
       ),
     },
   ];
