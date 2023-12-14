@@ -4,11 +4,11 @@
 ## Project Features and Screenshots
 
 ### 1. Study Creation Tool
-- *Screenshot:* ![Study Creation Tool](Screenshots/CreateNewStudy.png)
+- *Screenshot:* ![Study Creation Tool](CreateNewStudy.png)
 - Description: Lets researchers declare and configure studies, including characteristics and participants, integrating with the assent/consent menu.
 
 ### 2. Add Researcher
-- *Screenshot:* ![Add Researcher](Screenshots/AddResearcher.png)
+- *Screenshot:* ![Add Researcher](AddResearcher.png)
 - Description: Feature to add researchers to the system. Researchers can be added with specific roles and permissions.
 
 ### 3. Tagging System
