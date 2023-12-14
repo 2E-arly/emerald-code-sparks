@@ -10,11 +10,11 @@ tagging system
 ## Project Features and Screenshots
 
 ### 1. Study Creation Tool
-- *Screenshot:* ![Study Creation Tool](screenshots/CreateNewStudy.png)
+- *Screenshot:* ![Study Creation Tool](Screenshots/CreateNewStudy.png)
 - Description: Lets researchers declare and configure studies, including characteristics and participants, integrating with the assent/consent menu.
 
 ### 2. Add Researcher
-- *Screenshot:* ![Add Researcher](screenshots/AddResearcher.png)
+- *Screenshot:* ![Add Researcher](Screenshots/AddResearcher.png)
 - Description: Feature to add researchers to the system. Researchers can be added with specific roles and permissions.
 
 ### 3. Tagging System
