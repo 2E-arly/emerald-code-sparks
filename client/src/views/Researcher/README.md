@@ -23,6 +23,9 @@ tagging system
 ### 4. Sort/Search Feature
 - Description: Comprehensive filters for searching through students.
 
+### 5. Assent/Consent Feature
+- Description: Allows researchers to specify data/privacy permissions for each study, enabling students to choose what to allow or deny.
+
 ## Instructions to Run Locally
 
 1. Clone the repository:
@@ -50,6 +53,6 @@ tagging system
 
 4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
 
-5. Open a separate tab and navigate to [http://localhost:1337/admin] (http://localhost:1337/admin).
+5. Open a separate tab and navigate to [http://localhost:1337/admin](http://localhost:1337/admin).
 
 ###
