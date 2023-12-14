@@ -1,3 +1,64 @@
+# Team 2E ReadMe
+
+
+## Project Features and Screenshots
+
+### 1. Study Creation Tool
+- *Screenshot:* ![Study Creation Tool](Screenshots/CreateNewStudy.png)
+- Description: Lets researchers declare and configure studies, including characteristics and participants, integrating with the assent/consent menu.
+
+### 2. Add Researcher
+- *Screenshot:* ![Add Researcher](Screenshots/AddResearcher.png)
+- Description: Feature to add researchers to the system. Researchers can be added with specific roles and permissions.
+
+### 3. Tagging System
+- Description: Enables researchers to classify classrooms for study management, searchable through the sort/search feature.
+
+### 4. Sort/Search Feature
+- Description: Comprehensive filters for searching through students.
+
+### 5. Assent/Consent Feature
+- Description: Allows researchers to specify data/privacy permissions for each study, enabling students to choose what to allow or deny.
+
+## Instructions to Run Locally
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/UFWebApps2-0/emerald-code-sparks.git
+    cd emerald-code-sparks
+    ```
+
+2. Install dependencies:
+    ```bash
+    cd client
+    npm install
+    ```
+
+3. Start the development server:
+    ```bash
+    npm start
+    ```
+
+4. Start the Virtual Machine with Docker
+    ```bash
+    cd ..
+    docker-compose up
+    ```
+
+4. Open your browser and navigate to [http://localhost:3000](http://localhost:3000).
+
+5. Open a separate tab and navigate to [http://localhost:1337/admin](http://localhost:1337/admin).
+
+### Outstanding Work
+* Implement notifications for study completion/termination.
+* Enhance user interface for the study data collection page.
+* Further optimize and test code replay functionality.
+
+### Built Upon
+* This project is built upon React for the frontend.
+* Strapi is used for the backend and database.
+* Additional dependencies and libraries are listed in the package.json file.
+
 # CaSMM
 
 > Computation and Science Modeling through Making
