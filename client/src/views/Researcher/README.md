@@ -55,4 +55,12 @@ tagging system
 
 5. Open a separate tab and navigate to [http://localhost:1337/admin](http://localhost:1337/admin).
 
-###
+### Outstanding Work
+* Implement notifications for study completion/termination.
+* Enhance user interface for the study data collection page.
+* Further optimize and test code replay functionality.
+
+### Built Upon
+* This project is built upon React for the frontend.
+* Strapi is used for the backend and database.
+* Additional dependencies and libraries are listed in the package.json file.
