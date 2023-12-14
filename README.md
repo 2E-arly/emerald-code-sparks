@@ -12,36 +12,36 @@
 - Description: Feature to add researchers to the system. Researchers can be added with specific roles and permissions.
 
 ### 3. Tagging System
-- *Screenshot:* ![Tagging System](screenshots/taggingsystem.png)
+- *Screenshot:* ![Tagging System](screenshots/taggingsystem.PNG)
 - Description: Enables researchers to classify classrooms for study management, searchable through the sort/search feature.
 
 ### 4. Student Search
-- *Screenshot:* ![Student Search](screenshots/studentSearch.png)
+- *Screenshot:* ![Student Search](screenshots/studentSearch.PNG)
 - Description: Comprehensive filters for searching through students.
 
 ### 5. Assent/Consent Feature
-- *Screenshot:* ![Assent/Consent Feature](screenshots/assentconsent.png)
+- *Screenshot:* ![Assent/Consent Feature](screenshots/assentconsent.PNG)
 - Description: Allows researchers to specify data/privacy permissions for each study, enabling students to choose what to allow or deny.
 
 ### 6. Researcher Main Page
-- *Screenshot:* ![Researcher Main Page](screenshots/researchermainpage.png)
+- *Screenshot:* ![Researcher Main Page](screenshots/MainMenu.png)
 - Description: A splash page for researchers to land on after signing on. Allows them quick access to studies and students.
 
 ### 7. Batch Students
-- *Screenshot:* ![Batch Students](screenshots/batchstudents.png)
+- *Screenshot:* ![Batch Students](screenshots/batchstudents.PNG)
 - Allows grouping students together in order to work with them in studies easily.
 
 ### 8. Search Filter for Specific Studies
-- *Screenshot:* ![Search Filter for Specific Studies](screenshots/studyfilter.png)
+- *Screenshot:* ![Search Filter for Specific Studies](screenshots/studyfilter.PNG)
 - Can sort through various studies using multiple filters to find pertinent study.
 
 ### 9. Edit Study
-- *Screenshot:* ![Edit Study](screenshots/editstudy.png)
+- *Screenshot:* ![Edit Study](screenshots/editstudy.PNG)
 - Description: Allows researchers to modify studies by adding collaborators, students, etc.
 
 ### 10. Student Invite View and Code Template Frontend
-- *Screenshot:* ![Student Invite View and Code Template Frontend](screenshots/codetemplate.png)
-- *Screenshot:* ![Student Invite View and Code Template Frontend](screenshots/studentinvite.png)
+- *Screenshot:* ![Student Invite View and Code Template Frontend](screenshots/codetemplate.PNG)
+- *Screenshot:* ![Student Invite View and Code Template Frontend](screenshots/studentinvite.PNG)
 - Description: Displays an invite to students and lets them declare their permissions for the study. Researchers can use the Blocky sandbox to create a code template and send it to students.
 
 ### 11. Student Invite Tracking
